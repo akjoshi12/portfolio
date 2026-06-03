@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atri Joshi — AI / LLM Engineer</title>
+<meta name="description" content="Atri Joshi — AI / LLM Engineer. RAG systems, agents, and the evaluation that proves they work." />
+
+<!-- OPEN GRAPH -->
+<meta property="og:title" content="Atri Joshi — AI / LLM Engineer" />
+<meta property="og:description" content="RAG systems, agents, and the evaluation that proves they work." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://atrijoshi.vercel.app/" />
+<!-- TODO: add /og.png (1200x630) then uncomment:
+<meta property="og:image" content="https://atrijoshi.vercel.app/og.png" /> -->
+
+<!-- inline SVG favicon (vermillion dot) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23ece6d8'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d6411c'/%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ================= TOKENS ================= */
+:root{
+  --bg:#ece6d8; --bg-2:#e6dfce; --bg-3:#ddd3bf;
+  --ink:#1b1712; --ink-soft:#574f43; --ink-faint:#867c68;
+  --accent:#d6411c; --accent-2:#1f6f63;
+  --line:rgba(27,23,18,.16); --line-soft:rgba(27,23,18,.07);
+  --shadow:0 22px 48px -26px rgba(27,23,18,.5);
+  --maxw:1200px;
+}
+[data-theme="dark"]{
+  --bg:#14110d; --bg-2:#1d1813; --bg-3:#251f17;
+  --ink:#efe9db; --ink-soft:#b6ac97; --ink-faint:#8d8472;
+  --accent:#ff5e35; --accent-2:#46bda8;
+  --line:rgba(239,233,219,.15); --line-soft:rgba(239,233,219,.06);
+  --shadow:0 22px 48px -24px rgba(0,0,0,.75);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  transition:background .5s,color .5s;position:relative;
+}
+body::after{ /* grain */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.045;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] body::after{mix-blend-mode:screen;opacity:.06}
+::selection{background:var(--accent);color:#fff}
+a{color:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,60px)}
+.mono{font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase}
+.serif{font-family:"Fraunces",serif}
+
+/* registration marks (engineering-drawing motif) */
+.reg{position:absolute;width:13px;height:13px;opacity:.5;pointer-events:none}
+.reg::before,.reg::after{content:"";position:absolute;background:var(--accent)}
+.reg::before{left:50%;top:0;width:1px;height:100%;transform:translateX(-50%)}
+.reg::after{top:50%;left:0;height:1px;width:100%;transform:translateY(-50%)}
+
+/* ================= NAV ================= */
+header.nav{position:sticky;top:0;z-index:200;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
+.brand{font-family:"Fraunces",serif;font-weight:600;font-size:1.12rem;text-decoration:none;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.brand .b-dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-size:.8rem;font-weight:500;letter-spacing:.02em;position:relative;transition:color .2s}
+.nav-links a:not(.cv)::after{content:"";position:absolute;left:0;bottom:-5px;height:1.5px;width:0;background:var(--accent);transition:width .26s}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:not(.cv):hover::after{width:100%}
+.cv{border:1px solid var(--line);padding:7px 13px;border-radius:2px;transition:border-color .2s,color .2s}
+.cv:hover{border-color:var(--accent);color:var(--accent)}
+.theme-btn{background:none;border:1px solid var(--line);color:var(--ink);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;display:grid;place-items:center;transition:transform .35s,border-color .2s}
+.theme-btn:hover{transform:rotate(35deg);border-color:var(--accent)}
+.burger{display:none;background:none;border:1px solid var(--line);width:38px;height:38px;border-radius:3px;cursor:pointer;flex-direction:column;gap:4px;align-items:center;justify-content:center}
+.burger span{width:16px;height:1.6px;background:var(--ink);transition:.3s}
+.mobile-menu{display:none;position:fixed;inset:66px 0 auto 0;z-index:190;background:var(--bg-2);border-bottom:1px solid var(--line);transform:translateY(-110%);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.mobile-menu.open{transform:translateY(0)}
+.mobile-menu a{display:block;padding:18px 24px;text-decoration:none;color:var(--ink);font-family:"Fraunces",serif;font-size:1.3rem;border-bottom:1px solid var(--line-soft)}
+@media(max-width:760px){
+  .nav-links{display:none}
+  .burger{display:flex}
+  .theme-btn{display:none}
+}
+
+/* ================= HERO ================= */
+.hero{position:relative;padding:clamp(48px,8vw,96px) 0 clamp(40px,6vw,72px)}
+.hero .reg.tl{top:18px;left:14px}.hero .reg.tr{top:18px;right:14px}.hero .reg.br{bottom:0;right:14px}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.55;background-image:radial-gradient(var(--line-soft) 1.2px,transparent 1.2px);background-size:28px 28px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 80%);mask-image:linear-gradient(180deg,#000,transparent 80%)}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:44px;align-items:center}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.35fr .85fr;gap:60px}}
+.eyebrow{color:var(--accent);margin-bottom:22px;display:flex;align-items:center;gap:11px}
+.eyebrow .bar{height:1px;width:40px;background:var(--accent)}
+h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.7rem,7.5vw,5.6rem);line-height:.95;letter-spacing:-.03em;margin:0 0 18px}
+h1.title em{font-style:italic;font-weight:500;color:var(--accent)}
+/* measurement rule under headline */
+.rule{position:relative;height:14px;margin:0 0 26px;max-width:380px;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.rule::before{content:"";position:absolute;top:50%;left:0;right:0;height:1px;background:var(--line)}
+.rule .tick{position:absolute;top:0;width:1px;height:6px;background:var(--line)}
+.lede{font-size:clamp(1rem,1.7vw,1.2rem);color:var(--ink-soft);max-width:42ch;margin:0 0 32px}
+.lede b{color:var(--ink);font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:13px}
+.btn{text-decoration:none;font-weight:600;font-size:.9rem;padding:13px 22px;border-radius:2px;display:inline-flex;align-items:center;gap:9px;border:1.5px solid var(--ink);position:relative;overflow:hidden;transition:color .25s,border-color .25s}
+.btn .arr{transition:transform .25s}
+.btn:hover .arr{transform:translateX(4px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .3s;z-index:0}
+.btn.primary:hover::before{transform:translateY(0)}
+.btn.primary span{position:relative;z-index:1}
+.btn.ghost::before{content:"";position:absolute;inset:0;background:var(--accent);transform:translateY(101%);transition:transform .3s;z-index:0}
+.btn.ghost:hover{color:#fff;border-color:var(--accent)}
+.btn.ghost:hover::before{transform:translateY(0)}
+.btn.ghost span{position:relative;z-index:1}
+
+/* instrument readout (hero visual) */
+.scope{border:1px solid var(--line);background:var(--bg-2);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.scope-head{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;border-bottom:1px solid var(--line);color:var(--ink-faint)}
+.scope-head .live{display:flex;align-items:center;gap:7px;color:var(--accent-2)}
+.scope-head .live .d{width:7px;height:7px;border-radius:50%;background:var(--accent-2);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.scope-body{position:relative;height:220px}
+.scope-grid{position:absolute;inset:0;background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:26px 26px;opacity:.7}
+.scope svg{position:absolute;inset:0;width:100%;height:100%}
+.scope-foot{display:flex;justify-content:space-between;padding:10px 15px;border-top:1px solid var(--line);color:var(--ink-faint)}
+.node{fill:var(--bg);stroke:var(--accent);stroke-width:1.4}
+.node-2{stroke:var(--accent-2)}
+.link{stroke:var(--ink-faint);stroke-width:1;stroke-dasharray:3 4;opacity:.6}
+.drift{animation:drift 9s ease-in-out infinite alternate}
+.drift2{animation:drift 7s ease-in-out infinite alternate-reverse}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(6px,-8px)}}
+
+/* ================= SECTIONS ================= */
+section{padding:clamp(56px,9vw,108px) 0;border-top:1px solid var(--line-soft);position:relative}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:46px;flex-wrap:wrap}
+.sec-head .l{display:flex;align-items:baseline;gap:18px}
+.sec-head .idx{color:var(--accent)}
+.sec-head h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.9rem,4.2vw,3rem);letter-spacing:-.025em;margin:0;line-height:.95}
+.sec-head .meta{color:var(--ink-faint)}
+
+/* ---- flagship ---- */
+.flag{border:1px solid var(--line);background:var(--bg-2);box-shadow:var(--shadow);margin-bottom:26px;position:relative;overflow:hidden}
+.flag-top{padding:clamp(26px,3.5vw,44px) clamp(26px,3.5vw,44px) 0}
+.flag .badge{display:inline-flex;align-items:center;gap:9px;color:var(--accent);margin-bottom:16px}
+.flag .badge .star{width:14px;height:14px;display:inline-block}
+.flag h3{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.6rem,3.5vw,2.4rem);letter-spacing:-.02em;margin:0 0 14px;line-height:1.04}
+.flag p{color:var(--ink-soft);max-width:60ch;margin:0 0 22px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.tag{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.04em;padding:5px 11px;border:1px solid var(--line);border-radius:2px;color:var(--ink-soft)}
+.flinks{display:flex;gap:22px;flex-wrap:wrap}
+.flink{text-decoration:none;font-weight:600;font-size:.88rem;border-bottom:2px solid var(--accent);padding-bottom:2px;display:inline-flex;align-items:center;gap:7px;transition:color .2s}
+.flink:hover{color:var(--accent)}
+.flink .arr{transition:transform .2s}.flink:hover .arr{transform:translate(3px,-3px)}
+
+/* flagship visual panel: diagram + chart */
+.flag-vis{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border-top:1px solid var(--line);margin-top:clamp(26px,3.5vw,40px)}
+@media(min-width:860px){.flag-vis{grid-template-columns:1.5fr 1fr}}
+.vis-cell{background:var(--bg-2);padding:24px}
+.vis-cell h4{margin:0 0 4px;font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+.vis-cell .cap{color:var(--ink-faint);font-size:.74rem;margin:0 0 16px}
+.arch{width:100%;height:auto}
+.arch .box{fill:var(--bg);stroke:var(--ink-soft);stroke-width:1.3}
+.arch .box.acc{stroke:var(--accent)}
+.arch .box.acc2{stroke:var(--accent-2)}
+.arch text{fill:var(--ink);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.02em}
+.arch .flowline{stroke:var(--ink-faint);stroke-width:1.4;fill:none}
+.arch .pkt{fill:var(--accent)}
+/* eval bars */
+.chart{display:flex;align-items:flex-end;gap:14px;height:150px;padding-top:8px}
+.barwrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%}
+.barwrap .col{width:100%;display:flex;align-items:flex-end;height:100%}
+.bar{width:100%;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 60%,transparent));transform:scaleY(0);transform-origin:bottom;transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.barwrap:nth-child(2) .bar{background:linear-gradient(180deg,var(--accent-2),color-mix(in srgb,var(--accent-2) 60%,transparent))}
+.in .bar{transform:scaleY(1)}
+.barwrap .lbl{font-family:"JetBrains Mono",monospace;font-size:.6rem;letter-spacing:.05em;color:var(--ink-faint);text-align:center}
+.barwrap .val{font-family:"Fraunces",serif;font-weight:600;font-size:1.1rem;color:var(--ink)}
+
+/* ---- bento project grid ---- */
+.bento{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:680px){.bento{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:980px){.bento{grid-template-columns:repeat(3,1fr)}}
+.card{position:relative;border:1px solid var(--line);background:var(--bg-2);text-decoration:none;color:inherit;overflow:hidden;display:flex;flex-direction:column;min-height:230px;transition:border-color .25s}
+.card:hover{border-color:var(--accent)}
+.card.wide{grid-column:span 1}
+@media(min-width:980px){.card.wide{grid-column:span 2}}
+.card-thumb{height:104px;position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.card-thumb .pat{position:absolute;inset:0;transition:transform .5s ease}
+.card:hover .card-thumb .pat{transform:scale(1.08)}
+.card-body{padding:22px;display:flex;flex-direction:column;flex:1}
+.card .num{position:absolute;top:12px;right:14px;color:#fff;mix-blend-mode:difference;font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.1em}
+.card h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.26rem;letter-spacing:-.01em;margin:0 0 9px}
+.card p{color:var(--ink-soft);font-size:.92rem;margin:0 0 16px;flex:1}
+.card .ctags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.card .ctags span{font-family:"JetBrains Mono",monospace;font-size:.6rem;letter-spacing:.04em;color:var(--ink-faint);border:1px solid var(--line-soft);padding:3px 7px;border-radius:2px}
+.card .go{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px;color:var(--ink)}
+.card .go .arr{color:var(--accent);transition:transform .25s}
+.card:hover .go .arr{transform:translateX(5px)}
+/* generated thumbnail patterns */
+.pat-1{background:radial-gradient(circle at 30% 40%,var(--accent) 0,transparent 40%),radial-gradient(circle at 75% 60%,var(--accent-2) 0,transparent 45%),var(--bg-3)}
+.pat-2{background:repeating-linear-gradient(45deg,var(--bg-3) 0 11px,var(--bg-2) 11px 22px);position:relative}
+.pat-2::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,var(--accent) 0,transparent 30%)}
+.pat-3{background:conic-gradient(from 200deg at 70% 30%,var(--accent-2),var(--bg-3),var(--accent),var(--bg-3))}
+.pat-4{background:linear-gradient(135deg,var(--bg-3),var(--bg-2));position:relative}
+.pat-4::after{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--accent) 1.5px,transparent 1.5px);background-size:16px 16px;opacity:.55}
+.pat-5{background:linear-gradient(180deg,var(--accent-2) -40%,var(--bg-3) 60%)}
+
+/* ---- capabilities matrix ---- */
+.caps{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+@media(min-width:760px){.caps{grid-template-columns:repeat(3,1fr)}}
+.cap{background:var(--bg-2);padding:28px}
+.cap .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.cap h4{margin:0;font-family:"JetBrains Mono",monospace;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.cap .tier{font-family:"JetBrains Mono",monospace;font-size:.6rem;letter-spacing:.08em;color:var(--ink-faint)}
+.cap ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.cap li{display:flex;align-items:center;gap:12px;font-size:.92rem;color:var(--ink-soft)}
+.cap li .meter{flex:1;height:3px;background:var(--line-soft);border-radius:3px;overflow:hidden;position:relative}
+.cap li .meter i{position:absolute;left:0;top:0;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.cap:nth-child(2) li .meter i{background:var(--accent-2)}
+.in .cap li .meter i{transform:scaleX(var(--lv,.7))}
+.cap li .nm{min-width:96px}
+
+/* ---- journey ---- */
+.tl{position:relative}
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1px;background:var(--line)}
+@media(min-width:760px){.tl::before{left:206px}}
+.tl-item{position:relative;padding:0 0 30px 32px;transition:transform .25s}
+@media(min-width:760px){.tl-item{display:grid;grid-template-columns:206px 1fr;gap:48px;padding-left:0}.tl-item>div:last-child{padding-left:32px}}
+.tl-item::before{content:"";position:absolute;left:2px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+@media(min-width:760px){.tl-item::before{left:201px}}
+.tl-when{font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.04em;color:var(--ink-faint);padding-top:3px}
+.tl-role{font-family:"Fraunces",serif;font-weight:600;font-size:1.2rem;letter-spacing:-.01em;margin:0 0 5px}
+.tl-role .org{color:var(--accent)}
+.tl-desc{color:var(--ink-soft);font-size:.92rem;margin:0;max-width:56ch}
+
+/* ---- contact (inverted band) ---- */
+.contact{background:var(--ink);color:var(--bg);border:0}
+.contact .sec-head h2,.contact .sec-head .idx{color:var(--bg)}
+.contact .sec-head .idx{color:var(--accent)}
+.contact .meta{color:color-mix(in srgb,var(--bg) 55%,transparent)}
+.contact-grid{display:grid;gap:40px;grid-template-columns:1fr}
+@media(min-width:820px){.contact-grid{grid-template-columns:1.2fr .8fr;align-items:end}}
+.big-mail{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.7rem,5vw,3.4rem);letter-spacing:-.025em;text-decoration:none;line-height:1.04;display:inline-block;border-bottom:3px solid transparent;color:var(--bg);transition:border-color .25s,color .25s;word-break:break-word}
+.big-mail:hover{border-color:var(--accent);color:var(--accent)}
+.contact-sub{color:color-mix(in srgb,var(--bg) 70%,transparent);max-width:42ch;margin:22px 0 0}
+.links-list a{text-decoration:none;color:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid color-mix(in srgb,var(--bg) 18%,transparent);transition:padding-left .22s,color .2s}
+.links-list a:hover{padding-left:10px;color:var(--accent)}
+.links-list a .arr{color:var(--accent)}
+
+footer{padding:30px 0;color:var(--ink-faint)}
+.foot-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+/* ---- motion ---- */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.hero .eyebrow{animation:rise .8s .05s both}
+.hero h1.title{animation:rise .8s .14s both}
+.hero .rule{animation:rise .8s .24s both}
+.hero .lede{animation:rise .8s .32s both}
+.hero .cta{animation:rise .8s .42s both}
+.hero .scope{animation:rise .9s .5s both}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.001s!important}.reveal{opacity:1;transform:none}.in .bar,.in .cap li .meter i{transform:none}.bar{transform:scaleY(1)}.cap li .meter i{transform:scaleX(var(--lv,.7))}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand"><span class="b-dot"></span>Atri Joshi</a>
+    <nav class="nav-links">
+      <a href="#work">Work</a><a href="#stack">Stack</a><a href="#journey">Journey</a><a href="#contact">Contact</a>
+      <a href="/resume.pdf" class="cv" target="_blank" rel="noopener">Résumé ↗</a>
+      <button class="theme-btn" id="theme" aria-label="Toggle theme">◑</button>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mmenu">
+  <a href="#work">Work</a><a href="#stack">Stack</a><a href="#journey">Journey</a>
+  <a href="#contact">Contact</a><a href="/resume.pdf" target="_blank" rel="noopener">Résumé ↗</a>
+</div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:0">
+    <span class="reg tl"></span><span class="reg tr"></span><span class="reg br"></span>
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow mono"><span class="bar"></span>AI / LLM Engineer · Toronto</div>
+        <h1 class="title">Systems that<br>ship — and<br><em>prove it.</em></h1>
+        <div class="rule"><span class="tick" style="left:0%"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span></div>
+        <p class="lede">RAG pipelines, agents, and the <b>evaluation harnesses</b> that keep them honest. <span class="mono" style="color:var(--ink-faint)">[placeholder — your sharper line goes here]</span></p>
+        <div class="cta">
+          <a href="#work" class="btn primary"><span>See the work</span> <span class="arr">→</span></a>
+          <a href="#contact" class="btn ghost"><span>Get in touch</span></a>
+        </div>
+      </div>
+
+      <!-- instrument readout visual -->
+      <div class="scope" aria-hidden="true">
+        <div class="scope-head mono"><span>fig.01 — latent_space</span><span class="live"><span class="d"></span>live</span></div>
+        <div class="scope-body">
+          <div class="scope-grid"></div>
+          <svg viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+            <line class="link" x1="80" y1="60" x2="150" y2="120"/><line class="link" x1="150" y1="120" x2="250" y2="70"/>
+            <line class="link" x1="150" y1="120" x2="220" y2="170"/><line class="link" x1="250" y1="70" x2="300" y2="130"/>
+            <line class="link" x1="80" y1="60" x2="120" y2="40"/>
+            <circle class="node drift" cx="80" cy="60" r="6"/><circle class="node-2 node drift2" cx="150" cy="120" r="8"/>
+            <circle class="node drift2" cx="250" cy="70" r="5"/><circle class="node-2 node drift" cx="220" cy="170" r="6"/>
+            <circle class="node drift" cx="300" cy="130" r="5"/><circle class="node drift2" cx="120" cy="40" r="4"/>
+          </svg>
+        </div>
+        <div class="scope-foot mono"><span>dim · 1536</span><span>k=5</span><span>cos · 0.87</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="l"><span class="idx mono">01</span><h2>Selected Work</h2></div>
+        <span class="meta mono">06 projects</span>
+      </div>
+
+      <!-- FLAGSHIP -->
+      <article class="flag reveal">
+        <div class="flag-top">
+          <div class="badge mono"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 9.2l-5 4.3 1.6 6.8L12 16.9 6.4 20.3 8 13.5l-5-4.3 6.4-.6z"/></svg> Flagship · LLM System</div>
+          <h3>AURA — Emotionally-Intelligent Support Chatbot</h3>
+          <p><span class="mono" style="color:var(--ink-faint)">[placeholder copy]</span> Agentic RAG that picks the right support strategy, not just fluent words — retrieval over a large dialogue corpus, generation on a quantized Llama&nbsp;3&nbsp;70B, with a strategy classifier and an evaluation suite at the core.</p>
+          <div class="tags"><span class="tag">Agentic RAG</span><span class="tag">LangChain</span><span class="tag">ChromaDB</span><span class="tag">Llama 3 70B</span><span class="tag">Evaluation</span></div>
+          <div class="flinks">
+            <a class="flink" href="https://github.com/akjoshi12/Aura---Emotional-Intelligence-RAG-based-Chatbot" target="_blank" rel="noopener">View code <span class="arr">↗</span></a>
+            <a class="flink" href="#" target="_blank" rel="noopener">Live demo <span class="arr">↗</span></a>
+          </div>
+        </div>
+
+        <!-- visual panel: architecture + eval -->
+        <div class="flag-vis">
+          <div class="vis-cell">
+            <h4>Architecture</h4>
+            <p class="cap">retrieval → reasoning → response, with an eval loop <span style="color:var(--ink-faint)">[illustrative]</span></p>
+            <svg class="arch" viewBox="0 0 620 230">
+              <!-- nodes -->
+              <rect class="box" x="8" y="92" width="92" height="46" rx="3"/><text x="54" y="112" text-anchor="middle">Corpus</text><text x="54" y="127" text-anchor="middle" fill="var(--ink-faint)">500k+</text>
+              <rect class="box acc2" x="132" y="92" width="100" height="46" rx="3"/><text x="182" y="112" text-anchor="middle">Retriever</text><text x="182" y="127" text-anchor="middle" fill="var(--ink-faint)">ChromaDB</text>
+              <rect class="box acc" x="264" y="92" width="100" height="46" rx="3"/><text x="314" y="112" text-anchor="middle">LLM</text><text x="314" y="127" text-anchor="middle" fill="var(--ink-faint)">Llama3 70B</text>
+              <rect class="box" x="400" y="92" width="92" height="46" rx="3"/><text x="446" y="118" text-anchor="middle">Response</text>
+              <rect class="box acc" x="252" y="14" width="124" height="44" rx="3"/><text x="314" y="34" text-anchor="middle">Strategy</text><text x="314" y="49" text-anchor="middle" fill="var(--ink-faint)">classifier</text>
+              <rect class="box acc2" x="512" y="92" width="96" height="46" rx="3"/><text x="560" y="112" text-anchor="middle">Eval</text><text x="560" y="127" text-anchor="middle" fill="var(--ink-faint)">κ · F1</text>
+              <!-- flows -->
+              <path class="flowline" d="M100 115 H132"/><path class="flowline" d="M232 115 H264"/>
+              <path class="flowline" d="M364 115 H400"/><path class="flowline" d="M492 115 H512"/>
+              <path class="flowline" d="M314 92 V58"/>
+              <path class="flowline" d="M560 92 V70 H446 V138" stroke-dasharray="4 5"/>
+              <circle class="pkt" r="4"><animateMotion dur="3.2s" repeatCount="indefinite" path="M100 115 H132"/></circle>
+              <circle class="pkt" r="4"><animateMotion dur="3.2s" begin="0.8s" repeatCount="indefinite" path="M232 115 H264"/></circle>
+              <circle class="pkt" r="4"><animateMotion dur="3.2s" begin="1.6s" repeatCount="indefinite" path="M364 115 H400"/></circle>
+            </svg>
+          </div>
+          <div class="vis-cell">
+            <h4>Evaluation</h4>
+            <p class="cap">your real numbers land here <span style="color:var(--ink-faint)">[illustrative]</span></p>
+            <div class="chart" data-chart>
+              <div class="barwrap"><div class="val">0.81</div><div class="col"><div class="bar" style="height:81%"></div></div><div class="lbl">Strat F1</div></div>
+              <div class="barwrap"><div class="val">0.74</div><div class="col"><div class="bar" style="height:74%"></div></div><div class="lbl">κ agree</div></div>
+              <div class="barwrap"><div class="val">+18</div><div class="col"><div class="bar" style="height:62%"></div></div><div class="lbl">vs base</div></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- BENTO -->
+      <div class="bento">
+        <a class="card wide reveal" href="https://minuteminders.web.app/" target="_blank" rel="noopener">
+          <div class="card-thumb"><div class="pat pat-1"></div></div><span class="num">02</span>
+          <div class="card-body">
+            <h3>AI Meeting Assistant</h3>
+            <p><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> Whisper + Mistral-7B turn meeting audio into one-screen summaries with action items. Deployed &amp; live.</p>
+            <div class="ctags"><span>Whisper</span><span>Mistral-7B</span><span>Summarization</span></div>
+            <span class="go">Live app <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="card reveal" href="https://github.com/akjoshi12" target="_blank" rel="noopener">
+          <div class="card-thumb"><div class="pat pat-3"></div></div><span class="num">03</span>
+          <div class="card-body">
+            <h3>Multimodal Sentiment</h3>
+            <p><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> Text + image embeddings fused for sentiment on Yelp data.</p>
+            <div class="ctags"><span>NLP</span><span>Multimodal</span></div>
+            <span class="go">View code <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="card reveal" href="https://github.com/akjoshi12" target="_blank" rel="noopener">
+          <div class="card-thumb"><div class="pat pat-4"></div></div><span class="num">04</span>
+          <div class="card-body">
+            <h3>GCP Recommender</h3>
+            <p><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> Spark on Dataproc, built to stay real-time at scale.</p>
+            <div class="ctags"><span>Spark</span><span>Dataproc</span></div>
+            <span class="go">View code <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="card reveal" href="https://github.com/akjoshi12" target="_blank" rel="noopener">
+          <div class="card-thumb"><div class="pat pat-2"></div></div><span class="num">05</span>
+          <div class="card-body">
+            <h3>Explainable Pricing</h3>
+            <p><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> XGBoost + SHAP — every prediction ships with a why.</p>
+            <div class="ctags"><span>XGBoost</span><span>SHAP</span></div>
+            <span class="go">View code <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="card wide reveal" href="https://github.com/akjoshi12" target="_blank" rel="noopener">
+          <div class="card-thumb"><div class="pat pat-5"></div></div><span class="num">06</span>
+          <div class="card-body">
+            <h3>Third Eye — Vision for the Visually Impaired</h3>
+            <p><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> A computer-vision mobile app that turns a camera feed into spoken guidance.</p>
+            <div class="ctags"><span>Computer Vision</span><span>Mobile</span><span>Accessibility</span></div>
+            <span class="go">View code <span class="arr">→</span></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="l"><span class="idx mono">02</span><h2>Capabilities</h2></div>
+        <span class="meta mono">core → familiar</span>
+      </div>
+      <div class="caps reveal">
+        <div class="cap">
+          <div class="ch"><h4>LLM &amp; GenAI</h4><span class="tier">core</span></div>
+          <ul>
+            <li><span class="nm">RAG</span><span class="meter" style="--lv:.95"><i></i></span></li>
+            <li><span class="nm">Agents</span><span class="meter" style="--lv:.85"><i></i></span></li>
+            <li><span class="nm">LangChain</span><span class="meter" style="--lv:.9"><i></i></span></li>
+            <li><span class="nm">Evaluation</span><span class="meter" style="--lv:.8"><i></i></span></li>
+            <li><span class="nm">Llama 3 / Mistral</span><span class="meter" style="--lv:.85"><i></i></span></li>
+          </ul>
+        </div>
+        <div class="cap">
+          <div class="ch"><h4>Machine Learning</h4><span class="tier">working</span></div>
+          <ul>
+            <li><span class="nm">Python</span><span class="meter" style="--lv:.95"><i></i></span></li>
+            <li><span class="nm">scikit-learn</span><span class="meter" style="--lv:.85"><i></i></span></li>
+            <li><span class="nm">XGBoost</span><span class="meter" style="--lv:.8"><i></i></span></li>
+            <li><span class="nm">SHAP</span><span class="meter" style="--lv:.7"><i></i></span></li>
+            <li><span class="nm">CV / NLP</span><span class="meter" style="--lv:.75"><i></i></span></li>
+          </ul>
+        </div>
+        <div class="cap">
+          <div class="ch"><h4>Data &amp; Cloud</h4><span class="tier">familiar</span></div>
+          <ul>
+            <li><span class="nm">SQL</span><span class="meter" style="--lv:.85"><i></i></span></li>
+            <li><span class="nm">Spark</span><span class="meter" style="--lv:.7"><i></i></span></li>
+            <li><span class="nm">Databricks</span><span class="meter" style="--lv:.7"><i></i></span></li>
+            <li><span class="nm">Azure / GCP</span><span class="meter" style="--lv:.75"><i></i></span></li>
+            <li><span class="nm">Snowflake</span><span class="meter" style="--lv:.65"><i></i></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOURNEY -->
+  <section id="journey">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="l"><span class="idx mono">03</span><h2>Journey</h2></div>
+      </div>
+      <div class="tl">
+        <div class="tl-item reveal"><div class="tl-when">Sep 2023 — May 2025</div><div><p class="tl-role">PG Diploma, AI &amp; Data Science — <span class="org">Loyalist College</span></p><p class="tl-desc"><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> ML, data viz, and big-data systems.</p></div></div>
+        <div class="tl-item reveal"><div class="tl-when">Jul 2022 — Aug 2023</div><div><p class="tl-role">Associate Consultant — <span class="org">Teklink Software</span></p><p class="tl-desc"><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> Scalable data pipelines, ETL on Azure &amp; Databricks.</p></div></div>
+        <div class="tl-item reveal"><div class="tl-when">Jun 2021 — May 2022</div><div><p class="tl-role">Research Intern — <span class="org">Tech Mahindra</span></p><p class="tl-desc"><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> Intelligent dashboards with Power BI + Azure.</p></div></div>
+        <div class="tl-item reveal"><div class="tl-when">Aug 2018 — Jun 2022</div><div><p class="tl-role">B.Tech, Computer Science — <span class="org">Rashtriya Raksha University</span></p><p class="tl-desc"><span class="mono" style="color:var(--ink-faint)">[placeholder]</span> Software engineering, algorithms, databases.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="l"><span class="idx mono">04</span><h2>Let's talk</h2></div>
+        <span class="meta mono">open to roles</span>
+      </div>
+      <div class="contact-grid reveal">
+        <div>
+          <a class="big-mail" href="mailto:atri@example.com">atri@example.com</a>
+          <p class="contact-sub"><span class="mono" style="color:var(--accent)">[placeholder]</span> One line on what you're looking for — role type, remote/relocate, etc.</p>
+        </div>
+        <div class="links-list">
+          <a href="https://www.linkedin.com/in/atrijoshi/" target="_blank" rel="noopener"><span>LinkedIn</span><span class="arr">↗</span></a>
+          <a href="https://github.com/akjoshi12" target="_blank" rel="noopener"><span>GitHub</span><span class="arr">↗</span></a>
+          <a href="/resume.pdf" target="_blank" rel="noopener"><span>Résumé (PDF)</span><span class="arr">↓</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap foot-inner"><span class="mono">© 2026 Atri Joshi</span><span class="mono">Toronto · ON</span></div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement, t=document.getElementById('theme');
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) root.setAttribute('data-theme','dark');
+  if(t) t.addEventListener('click',function(){root.setAttribute('data-theme', root.getAttribute('data-theme')==='dark'?'light':'dark')});
+  // mobile menu
+  var b=document.getElementById('burger'), m=document.getElementById('mmenu');
+  if(b&&m){
+    b.addEventListener('click',function(){m.classList.toggle('open')});
+    m.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){m.classList.remove('open')})});
+  }
+  // reveals
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+  var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}})},{threshold:.16});
+  els.forEach(function(e){io.observe(e)});
+})();
+</script>
+</body>
+</html>
