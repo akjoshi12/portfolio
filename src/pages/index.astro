@@ -1,0 +1,155 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import StatusBadge from "../components/StatusBadge.astro";
+import { site, featured, earlier, principles, stack, experience, education } from "../content/site";
+
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+<Base>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <p class="chip mono"><span class="dot" aria-hidden="true"></span>{site.status} · {site.location}</p>
+      <p class="hero-name mono">{site.name} — Data &amp; AI Engineer</p>
+      <h1 id="hero-title">{site.headline}</h1>
+      <p class="lede">{site.lede}</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#work">View work <Icon name="arrow-right" /></a>
+        <a class="btn" href={site.resume}>Résumé <Icon name="file-text" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="section" aria-labelledby="work-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="label mono">01 / Selected work</p>
+        <h2 id="work-title">Systems I've built — and how I checked them</h2>
+      </header>
+      <ol class="cards" role="list">
+        {featured.map((p, i) => (
+          <li class="card reveal">
+            <div class="card-top mono">
+              <span class="idx">{pad(i + 1)}</span>
+              <StatusBadge status={p.status} />
+            </div>
+            <h3><a class="stretched" href={`/work/${p.slug}`}>{p.title}</a></h3>
+            <p class="kind mono">{p.kind}</p>
+            <p class="summary">{p.summary}</p>
+            {p.facts && (
+              <dl class="facts">
+                {p.facts.map((f) => (
+                  <div><dt class="mono">{f.label}</dt><dd class="mono">{f.value}</dd></div>
+                ))}
+              </dl>
+            )}
+            <ul class="tags mono" aria-label="Stack">
+              {p.stack.map((t) => <li>{t}</li>)}
+            </ul>
+            <div class="card-links mono">
+              <span class="read">Case study <Icon name="arrow-right" /></span>
+              {p.repoUrl && <a class="lift" href={p.repoUrl} rel="noopener"><Icon name="github" /> Code</a>}
+              {p.demoUrl && <a class="lift" href={p.demoUrl} rel="noopener"><Icon name="arrow-up-right" /> Live</a>}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <h3 class="sub-head mono" id="earlier-title">Earlier work</h3>
+      <table class="earlier" aria-labelledby="earlier-title">
+        <thead class="mono"><tr><th scope="col">Project</th><th scope="col">What</th><th scope="col">Stack</th></tr></thead>
+        <tbody>
+          {earlier.map((e) => (
+            <tr>
+              <th scope="row">{e.url ? <a href={e.url} rel="noopener">{e.title}</a> : e.title}</th>
+              <td>{e.summary}</td>
+              <td class="mono">{e.stack.join(" · ")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="approach" class="section" aria-labelledby="approach-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="label mono">02 / How I work</p>
+        <h2 id="approach-title">Three rules, each with a receipt</h2>
+      </header>
+      <ol class="principles" role="list">
+        {principles.map((pr, i) => (
+          <li class="reveal">
+            <span class="idx mono">{pad(i + 1)}</span>
+            <h3>{pr.title}</h3>
+            <p>{pr.body}</p>
+            <p class="proof mono"><a href={`/work/${pr.slug}`}>{pr.proof}</a></p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="stack" class="section" aria-labelledby="stack-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="label mono">03 / Stack</p>
+        <h2 id="stack-title">Tools, with honest depth</h2>
+      </header>
+      <dl class="stack">
+        {stack.map((g) => (
+          <div class="stack-row">
+            <dt class="mono">{g.depth}</dt>
+            <dd><ul class="tags mono" role="list">{g.items.map((t) => <li>{t}</li>)}</ul></dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section id="experience" class="section" aria-labelledby="exp-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="label mono">04 / Experience &amp; education</p>
+        <h2 id="exp-title">Where the foundation came from</h2>
+      </header>
+      <div class="timelines">
+        {[["Experience", experience], ["Education", education]].map(([label, rows]) => (
+          <div>
+            <h3 class="sub-head mono">{label as string}</h3>
+            <ol class="timeline" role="list">
+              {(rows as typeof experience).map((r) => (
+                <li class={r.secondary ? "secondary" : ""}>
+                  <span class="when mono">{r.when}</span>
+                  <div>
+                    <p class="role">{r.title} <span class="org">· {r.org}{r.place && `, ${r.place}`}</span></p>
+                    {r.secondary && <p class="detail mono">Alongside</p>}
+                    {r.detail && <p class="detail">{r.detail}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="label mono">05 / Contact</p>
+        <h2 id="contact-title">Hiring for AI, data science or data engineering? Let's talk.</h2>
+      </header>
+      <div class="contact-row">
+        <a class="email mono" href={`mailto:${site.email}`}><Icon name="mail" size={20} /> {site.email}</a>
+        <button class="btn" type="button" data-copy={site.email}><Icon name="copy" /> Copy email</button>
+      </div>
+      <ul class="links mono" role="list">
+        <li><a href={site.linkedin} rel="noopener"><Icon name="linkedin" /> LinkedIn</a></li>
+        <li><a href={site.github} rel="noopener"><Icon name="github" /> GitHub</a></li>
+        <li><a href={site.resume}><Icon name="file-text" /> Résumé (PDF)</a></li>
+      </ul>
+    </div>
+  </section>
+</Base>

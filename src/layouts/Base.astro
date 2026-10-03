@@ -1,0 +1,133 @@
+---
+import "@fontsource-variable/geist/wght.css";
+import "@fontsource-variable/geist-mono/wght.css";
+import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
+import "../styles/global.css";
+import Icon from "../components/Icon.astro";
+import { site } from "../content/site";
+
+interface Props { title?: string; description?: string }
+const { title = site.title, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", site.url).href;
+const ogImage = new URL("/og.png", site.url).href;
+const isHome = Astro.url.pathname === "/";
+const nav = [
+  ["Work", "/#work"],
+  ["Approach", "/#approach"],
+  ["Stack", "/#stack"],
+  ["Experience", "/#experience"],
+  ["Contact", "/#contact"],
+];
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: site.url,
+  email: `mailto:${site.email}`,
+  jobTitle: "Data & AI Engineer",
+  address: { "@type": "PostalAddress", addressLocality: "Toronto", addressCountry: "CA" },
+  sameAs: [site.linkedin, site.github],
+};
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="theme-color" content="#0B0D0E" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={site.name} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  {isHome && <script type="application/ld+json" set:html={JSON.stringify(person)} />}
+
+  <script is:inline>
+    // Stored choice → else system preference → else dark. Runs before paint to avoid a flash.
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      document.documentElement.dataset.theme = t;
+      document.documentElement.classList.add("js");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand mono" href="/" aria-label={`${site.name} — home`}>atri<span class="accent">.</span>joshi</a>
+      <nav aria-label="Primary">
+        <ul>
+          {nav.map(([label, href]) => <li class={label !== "Work" && label !== "Contact" ? "nav-wide" : ""}><a href={href}>{label}</a></li>)}
+        </ul>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Dark theme" aria-pressed="true">
+        <Icon name="moon" size={18} class="i-dark" />
+        <Icon name="sun" size={18} class="i-light" />
+      </button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner mono">
+      <span>© {new Date().getFullYear()} {site.name} · {site.location}</span>
+      <span>Built with Astro · No trackers</span>
+    </div>
+  </footer>
+
+  <div class="toast mono" role="status" aria-live="polite"></div>
+
+  <script>
+    const root = document.documentElement;
+    const toggle = document.querySelector<HTMLButtonElement>(".theme-toggle")!;
+    const sync = () => toggle.setAttribute("aria-pressed", String(root.dataset.theme === "dark"));
+    sync();
+    toggle.addEventListener("click", () => {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      try { localStorage.setItem("theme", root.dataset.theme); } catch {}
+      sync();
+    });
+
+    const toast = document.querySelector<HTMLElement>(".toast")!;
+    let timer: number | undefined;
+    document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) =>
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy!);
+          toast.textContent = "Email copied to clipboard";
+        } catch {
+          toast.textContent = `Copy failed — ${btn.dataset.copy}`;
+        }
+        toast.classList.add("show");
+        clearTimeout(timer);
+        timer = window.setTimeout(() => toast.classList.remove("show"), 2200);
+      }),
+    );
+
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))),
+      { rootMargin: "0px 0px -10% 0px" },
+    );
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>

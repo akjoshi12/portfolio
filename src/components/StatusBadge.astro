@@ -1,0 +1,6 @@
+---
+import type { Status } from "../content/site";
+const { status } = Astro.props as { status: Status };
+const cls = { Shipped: "shipped", "In progress": "progress", Exploration: "exploration" }[status];
+---
+<span class={`badge ${cls}`}><span class="dot" aria-hidden="true"></span>{status}</span>
