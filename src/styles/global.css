@@ -222,3 +222,56 @@ main:focus { outline: none; }
   .js .reveal.in { opacity: 1; transform: none; }
   .js .card.reveal.in:hover, .js .card.reveal.in:focus-within { transform: translateY(-2px); }
 }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Case study */
+.study-head { padding: var(--s-12) 0 var(--s-16); border-bottom: 1px solid var(--border); }
+.back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-bottom: var(--s-8); font-size: var(--fs-sm); color: var(--muted); text-decoration: none; }
+.study-head .card-top { justify-content: flex-start; gap: var(--s-4); }
+.study-head h1 { margin-top: var(--s-4); font-size: var(--fs-display); }
+.study-head .kind { margin-top: var(--s-2); }
+.study-head .tags { margin-top: var(--s-6); }
+.study-body { display: grid; gap: var(--s-16); padding-top: var(--s-16); padding-bottom: var(--s-16); }
+.study-body section { display: grid; gap: var(--s-4); }
+@media (min-width: 900px) {
+  .study-body section { grid-template-columns: 240px 1fr; gap: var(--s-8); }
+  .study-body section.wide { grid-template-columns: 1fr; }
+}
+.study-body h2 { font-size: var(--fs-lg); display: flex; gap: var(--s-3); align-items: baseline; }
+.study-body h2 .mono { font-size: var(--fs-xs); font-weight: 400; color: var(--faint); }
+.prose { max-width: var(--measure); color: var(--muted); }
+.prose p + p { margin-top: var(--s-4); }
+.bullets { display: grid; gap: var(--s-3); }
+.bullets li { position: relative; padding-left: var(--s-6); color: var(--muted); }
+.bullets li::before { content: ""; position: absolute; left: 4px; top: 0.7em; width: 8px; height: 1px; background: var(--accent); }
+.decisions { display: grid; gap: var(--s-6); max-width: var(--measure); }
+.decisions dt { font-weight: 500; }
+.decisions dd { margin-top: var(--s-1); color: var(--muted); }
+.facts.big { margin-bottom: var(--s-6); grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: var(--s-4); }
+.facts.big dd { font-size: var(--fs-xl); }
+.status-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.next-project { border-top: 1px solid var(--border); }
+.next-project a { display: grid; width: fit-content; gap: var(--s-2); padding: var(--s-12) 0; text-decoration: none; }
+.next-title { display: inline-flex; align-items: center; gap: var(--s-3); font-size: var(--fs-2xl); font-weight: 600; letter-spacing: var(--tracking-tight); }
+
+/* Diagram */
+.diagram { margin: 0; padding: var(--s-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.diagram svg { display: block; width: 100%; height: auto; overflow: visible; }
+.diagram .dg-defs { position: absolute; width: 0; height: 0; }
+.diagram .dg-v { max-width: 340px; margin: 0 auto; }
+.diagram .dg-h { display: none; }
+@media (min-width: 900px) { .diagram .dg-h { display: block; } .diagram .dg-v { display: none; } }
+.diagram figcaption { margin-top: var(--s-4); font-size: var(--fs-xs); color: var(--faint); text-align: center; }
+.dg-node { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
+.dg-label { fill: var(--text); font: 600 15px var(--font-sans); }
+.dg-sub { fill: var(--faint); font: 400 11px var(--font-mono); }
+.dg-edge { stroke: var(--faint); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.dg-head { fill: var(--faint); }
+.dg-loop { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.dg-loop-head { fill: var(--accent); }
+.dg-loop-label { fill: var(--accent); font: 400 11px var(--font-mono); }
+@media (prefers-reduced-motion: no-preference) {
+  .dg-edge, .dg-loop { animation: dg-flow 1s linear infinite; }
+}
+@keyframes dg-flow { to { stroke-dashoffset: -10; } }

@@ -1,0 +1,89 @@
+---
+// Data-driven pipeline diagram: horizontal on wide screens, vertical on narrow ones.
+// Colors come from theme tokens; edge flow animation stops under prefers-reduced-motion.
+import type { Diagram } from "../content/site";
+
+const { diagram, id } = Astro.props as { diagram: Diagram; id: string };
+const { nodes, loops = [] } = diagram;
+const n = nodes.length;
+
+// Horizontal layout
+const W = 1080, gap = 36, nh = 76;
+const nw = (W - (n - 1) * gap) / n;
+const above = loops.filter((_, i) => i % 2 === 1);
+const below = loops.filter((_, i) => i % 2 === 0);
+const top = above.length ? 64 : 8;
+const H = top + nh + (below.length ? 72 : 8);
+const cx = (i: number) => i * (nw + gap) + nw / 2;
+
+// Vertical layout
+const VW = 340, vnw = 260, vnh = 60, vgap = 32;
+const VH = n * vnh + (n - 1) * vgap + 4;
+const cy = (i: number) => i * (vnh + vgap) + vnh / 2;
+---
+<figure class="diagram">
+  <svg class="dg-defs" width="0" height="0" aria-hidden="true">
+    <defs>
+      <marker id={`${id}-a`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="dg-head" /></marker>
+      <marker id={`${id}-l`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="dg-loop-head" /></marker>
+    </defs>
+  </svg>
+  <svg class="dg-h" viewBox={`-2 0 ${W + 4} ${H}`} aria-hidden="true">
+    {nodes.slice(0, -1).map((_, i) => (
+      <line class="dg-edge" x1={cx(i) + nw / 2} y1={top + nh / 2} x2={cx(i + 1) - nw / 2 - 2} y2={top + nh / 2} marker-end={`url(#${id}-a)`} />
+    ))}
+    {below.map((l) => {
+      const y = top + nh + 36;
+      return (
+        <g>
+          <path class="dg-loop" d={`M${cx(l.from)} ${top + nh} V${y} H${cx(l.to)} V${top + nh + 3}`} marker-end={`url(#${id}-l)`} />
+          <text class="dg-loop-label" x={(cx(l.from) + cx(l.to)) / 2} y={y + 20} text-anchor="middle">{l.label}</text>
+        </g>
+      );
+    })}
+    {above.map((l) => {
+      const y = top - 36;
+      return (
+        <g>
+          <path class="dg-loop" d={`M${cx(l.from)} ${top} V${y} H${cx(l.to)} V${top - 3}`} marker-end={`url(#${id}-l)`} />
+          <text class="dg-loop-label" x={(cx(l.from) + cx(l.to)) / 2} y={y - 10} text-anchor="middle">{l.label}</text>
+        </g>
+      );
+    })}
+    {nodes.map((node, i) => (
+      <g>
+        <rect class="dg-node" x={cx(i) - nw / 2} y={top} width={nw} height={nh} rx="8" />
+        <text class="dg-label" x={cx(i)} y={top + 33} text-anchor="middle">{node.label}</text>
+        {node.sub && <text class="dg-sub" x={cx(i)} y={top + 55} text-anchor="middle">{node.sub}</text>}
+      </g>
+    ))}
+  </svg>
+
+  <svg class="dg-v" viewBox={`0 0 ${VW} ${VH}`} aria-hidden="true">
+    {nodes.slice(0, -1).map((_, i) => (
+      <line class="dg-edge" x1={vnw / 2} y1={cy(i) + vnh / 2} x2={vnw / 2} y2={cy(i + 1) - vnh / 2 - 2} marker-end={`url(#${id}-a)`} />
+    ))}
+    {loops.map((l, k) => {
+      const x = vnw + 22 + k * 26;
+      return (
+        <g>
+          <path class="dg-loop" d={`M${vnw} ${cy(l.from)} H${x} V${cy(l.to)} H${vnw + 3}`} marker-end={`url(#${id}-l)`} />
+          <text class="dg-loop-label" transform={`translate(${x + 12} ${(cy(l.from) + cy(l.to)) / 2}) rotate(90)`} text-anchor="middle">{l.label}</text>
+        </g>
+      );
+    })}
+    {nodes.map((node, i) => (
+      <g>
+        <rect class="dg-node" x="1" y={cy(i) - vnh / 2} width={vnw - 2} height={vnh} rx="8" />
+        <text class="dg-label" x={vnw / 2} y={cy(i) - 3} text-anchor="middle">{node.label}</text>
+        {node.sub && <text class="dg-sub" x={vnw / 2} y={cy(i) + 17} text-anchor="middle">{node.sub}</text>}
+      </g>
+    ))}
+  </svg>
+
+  <figcaption class="mono">{diagram.title}</figcaption>
+  <ol class="sr-only">
+    {nodes.map((node) => <li>{node.label}{node.sub && ` — ${node.sub}`}</li>)}
+    {loops.map((l) => <li>Feedback: {nodes[l.from].label} back to {nodes[l.to].label} ({l.label})</li>)}
+  </ol>
+</figure>

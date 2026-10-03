@@ -1,0 +1,112 @@
+---
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import StatusBadge from "../../components/StatusBadge.astro";
+import Diagram from "../../components/Diagram.astro";
+import { featured, caseStudies, type Project } from "../../content/site";
+
+export function getStaticPaths() {
+  return featured.map((project, i) => {
+    const study = caseStudies[project.slug];
+    if (!study) throw new Error(`Missing case study for ${project.slug}`);
+    return { params: { slug: project.slug }, props: { project, study, i } };
+  });
+}
+
+const { project, study, i } = Astro.props;
+const next: Project = featured[(i + 1) % featured.length];
+const pad = (n: number) => String(n).padStart(2, "0");
+
+const sections = [
+  ["problem", "Problem"],
+  ["approach", "Approach"],
+  ["architecture", "Architecture"],
+  ["decisions", "Key decisions"],
+  study.measured && ["measured", "What I measured"],
+  study.didntWork && ["didnt-work", "What didn't work"],
+  study.next && ["next", "Status / next"],
+].filter(Boolean) as [string, string][];
+const num = Object.fromEntries(sections.map(([id], k) => [id, pad(k + 1)]));
+---
+<Base title={`${project.title} — ${project.kind} · Atri Joshi`} description={project.summary}>
+  <article class="study">
+    <header class="study-head">
+      <div class="wrap">
+        <a class="back mono" href="/#work"><Icon name="arrow-left" /> All work</a>
+        <div class="card-top mono">
+          <span class="idx">{pad(i + 1)} / {pad(featured.length)}</span>
+          <StatusBadge status={project.status} />
+        </div>
+        <h1>{project.title}</h1>
+        <p class="kind mono">{project.kind}</p>
+        <p class="lede">{project.summary}</p>
+        <ul class="tags mono" aria-label="Stack">{project.stack.map((t) => <li>{t}</li>)}</ul>
+        {(project.repoUrl || project.demoUrl) && (
+          <div class="cta-row">
+            {project.repoUrl && <a class="btn" href={project.repoUrl} rel="noopener"><Icon name="github" /> Source code</a>}
+            {project.demoUrl && <a class="btn primary" href={project.demoUrl} rel="noopener">Live demo <Icon name="arrow-up-right" /></a>}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <div class="wrap study-body">
+      <section aria-labelledby="problem">
+        <h2 id="problem"><span class="mono">{num.problem}</span> Problem</h2>
+        <div class="prose"><p>{study.problem}</p></div>
+      </section>
+
+      <section aria-labelledby="approach">
+        <h2 id="approach"><span class="mono">{num.approach}</span> Approach</h2>
+        <ul class="prose bullets">{study.approach.map((a) => <li>{a}</li>)}</ul>
+      </section>
+
+      <section class="wide" aria-labelledby="architecture">
+        <h2 id="architecture"><span class="mono">{num.architecture}</span> Architecture</h2>
+        <Diagram diagram={study.diagram} id={`dg-${project.slug}`} />
+      </section>
+
+      <section aria-labelledby="decisions">
+        <h2 id="decisions"><span class="mono">{num.decisions}</span> Key decisions &amp; tradeoffs</h2>
+        <dl class="decisions">
+          {study.decisions.map((d) => <div><dt>{d.title}</dt><dd>{d.body}</dd></div>)}
+        </dl>
+      </section>
+
+      {study.measured && (
+        <section aria-labelledby="measured">
+          <h2 id="measured"><span class="mono">{num.measured}</span> What I measured</h2>
+          <div class="prose">
+            {study.measured.facts && (
+              <dl class="facts big">
+                {study.measured.facts.map((f) => <div><dt class="mono">{f.label}</dt><dd class="mono">{f.value}</dd></div>)}
+              </dl>
+            )}
+            <ul class="bullets">{study.measured.notes.map((n) => <li>{n}</li>)}</ul>
+          </div>
+        </section>
+      )}
+
+      {study.didntWork && (
+        <section aria-labelledby="didnt-work">
+          <h2 id="didnt-work"><span class="mono">{num["didnt-work"]}</span> What didn't work</h2>
+          <ul class="prose bullets">{study.didntWork.map((d) => <li>{d}</li>)}</ul>
+        </section>
+      )}
+
+      {study.next && (
+        <section aria-labelledby="next">
+          <h2 id="next"><span class="mono">{num.next}</span> Status / next</h2>
+          <div class="prose status-row"><StatusBadge status={project.status} /><p>{study.next}</p></div>
+        </section>
+      )}
+    </div>
+
+    <nav class="next-project" aria-label="Next case study">
+      <div class="wrap"><a href={`/work/${next.slug}`}>
+        <span class="label mono">Next case study</span>
+        <span class="next-title">{next.title} <Icon name="arrow-right" size={20} /></span>
+      </a></div>
+    </nav>
+  </article>
+</Base>
