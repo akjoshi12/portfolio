@@ -265,7 +265,7 @@ main:focus { outline: none; }
 .diagram figcaption { margin-top: var(--s-4); font-size: var(--fs-xs); color: var(--faint); text-align: center; }
 .dg-node { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
 .dg-label { fill: var(--text); font: 600 15px var(--font-sans); }
-.dg-sub { fill: var(--faint); font: 400 11px var(--font-mono); }
+.dg-sub { fill: var(--muted); font: 400 11px var(--font-mono); }
 .dg-edge { stroke: var(--faint); stroke-width: 1.5; stroke-dasharray: 5 5; }
 .dg-head { fill: var(--faint); }
 .dg-loop { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 5; }
