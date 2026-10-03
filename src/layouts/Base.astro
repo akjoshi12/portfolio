@@ -123,11 +123,48 @@ const person = {
       }),
     );
 
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Count a metric up from 0 to its real value; the final text is restored exactly.
+    const countUp = (el: HTMLElement) => {
+      const final = el.textContent!.trim();
+      const m = final.match(/^([^\d]*)(\d+(?:\.\d+)?)(.*)$/);
+      if (!m || still) return;
+      const [, pre, num, post] = m;
+      const dec = (num.split(".")[1] || "").length;
+      const t0 = performance.now();
+      const tick = (t: number) => {
+        const p = Math.min(1, (t - t0) / 1100);
+        el.textContent = p < 1 ? pre + (+num * (1 - (1 - p) ** 3)).toFixed(dec) + post : final;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))),
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("in");
+          if (e.target instanceof HTMLElement && "count" in e.target.dataset) countUp(e.target);
+          io.unobserve(e.target);
+        }),
       { rootMargin: "0px 0px -10% 0px" },
     );
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    document.querySelectorAll(".reveal, .card, [data-count]").forEach((el) => io.observe(el));
+
+    // SMIL animations (packets, pulses): frozen under reduced motion, paused while off-screen.
+    const live = document.querySelectorAll<SVGSVGElement>("svg[data-live]");
+    if (still) live.forEach((s) => s.pauseAnimations());
+    else {
+      const vis = new IntersectionObserver((entries) =>
+        entries.forEach((e) => {
+          const s = e.target as SVGSVGElement;
+          e.isIntersecting ? s.unpauseAnimations() : s.pauseAnimations();
+        }),
+      );
+      live.forEach((s) => vis.observe(s));
+    }
   </script>
 </body>
 </html>

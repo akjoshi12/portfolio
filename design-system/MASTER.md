@@ -3,7 +3,7 @@
 Generated with ui-ux-pro-max (`--design-system "developer portfolio AI engineer data engineer technical credible minimal dark"` + style/typography/color/landing/ux/web domain queries), then refined to the brief. Tokens: `tokens.css`.
 
 ## Direction
-**"Lab notebook / instrument panel."** Precise, engineered, calm. Clean break from v1 (bone + Fraunces + grain).
+**"Mission control / live instrument panel."** Precise, engineered, alive — the page behaves like a running system. Clean break from v1 (bone + Fraunces + grain). (Revised from "calm" in the motion pass.)
 
 | Decision | Skill output | Final | Why |
 |---|---|---|---|
@@ -45,11 +45,24 @@ Rules: one accent; never color-only status (badge always has text + icon). Accen
 - Icons: Lucide (inline SVG, 24 viewBox, 16/20px). No emoji.
 
 ## Motion
-- Enter: fade + translateY(8px), 200–300ms ease-out, once, via IntersectionObserver; 1–2 animated elements per view max.
-- Hover: border-color + translateY(-2px) on cards (≤4px), 200ms. No scale.
-- Diagrams: dashed-stroke flow (`stroke-dashoffset`) on edges only.
-- `prefers-reduced-motion`: all durations 0, diagram flow paused.
-- Banned: scroll-jacking, parallax, custom cursor (v0 had one), scroll-snap.
+Rule: **every animation depicts something real**; nothing moves just to decorate.
+| Where | What moves | What it shows |
+|---|---|---|
+| Hero console | packets flow ingest→eval, stages pulse on arrival, eval gate checked | the headline: build the pipeline, then measure |
+| Hero readout | REAL METRICS type out as status lines, cursor blinks | proof, in the first 3 seconds |
+| Metric chips | count up 0 → value once in view | the number itself |
+| AURA card | the 8 ESConv strategies light one at a time | the labeler's label space |
+| Resume Factory card | active state walks select → review → compile → 1 page, holding at review (amber) | interrupt() waiting on a human |
+| Redline card | 23 cells go green in sequence | the Phase 1 test gate |
+| MinuteMinders card | FRE bars grow to 50.53 and 63.55 | the honest loss to baseline |
+| Case-study diagrams | edges draw, nodes light in order, then loops; packets flow, loops march | the architecture executing |
+| Status dots | pulse (Open to roles, In progress) | live state |
+
+Mechanics: CSS keyframes + SVG SMIL (`animateMotion`) + ~1 KB JS (IntersectionObserver, rAF counter). transform / opacity / clip-path / stroke-dashoffset only.
+Scroll-triggered animations start paused and play on `.in`. SVGs pause when off-screen.
+**Reduced motion:** default CSS *is* the final state; animations exist only under `prefers-reduced-motion: no-preference`; SMIL is frozen via `pauseAnimations()`; counters don't run.
+Gotcha: the CSS minifier drops an `animation` shorthand that has no name. Use longhands when the name is set elsewhere.
+Banned: scroll-jacking, parallax, custom cursor, scroll-snap, decorative motion without a referent.
 
 ## Accessibility
 Skip link, landmarks, `:focus-visible` 2px accent ring offset 2px, 44px touch targets, theme toggle is a `<button aria-pressed>` with label, alt text on all images, SVG diagrams get `<title>` + text fallback list.

@@ -1,11 +1,16 @@
 ---
 // Data-driven pipeline diagram: horizontal on wide screens, vertical on narrow ones.
-// Colors come from theme tokens; edge flow animation stops under prefers-reduced-motion.
+// On entering view it draws itself (edges stroke in, nodes light in order, then feedback loops),
+// then packets flow along the pipeline and loops. Reduced motion shows the finished drawing.
 import type { Diagram } from "../content/site";
 
 const { diagram, id } = Astro.props as { diagram: Diagram; id: string };
 const { nodes, loops = [] } = diagram;
 const n = nodes.length;
+const step = 0.22; // seconds between nodes in the draw-in sequence
+const loopDelay = n * step + 0.2;
+const d = (s: number) => `--d:${s.toFixed(2)}s`;
+const flowDur = `${(n * 0.7).toFixed(1)}s`;
 
 // Horizontal layout
 const W = 1080, gap = 36, nh = 76;
@@ -15,43 +20,49 @@ const below = loops.filter((_, i) => i % 2 === 0);
 const top = above.length ? 64 : 8;
 const H = top + nh + (below.length ? 72 : 8);
 const cx = (i: number) => i * (nw + gap) + nw / 2;
+const hLoop = (l: { from: number; to: number }, dir: 1 | -1) => {
+  const edge = dir === 1 ? top + nh : top;
+  return `M${cx(l.from)} ${edge} V${edge + dir * 36} H${cx(l.to)} V${edge + dir * 3}`;
+};
 
 // Vertical layout
 const VW = 340, vnw = 260, vnh = 60, vgap = 32;
 const VH = n * vnh + (n - 1) * vgap + 4;
 const cy = (i: number) => i * (vnh + vgap) + vnh / 2;
+const vLoop = (l: { from: number; to: number }, k: number) => {
+  const x = vnw + 22 + k * 26;
+  return { x, d: `M${vnw} ${cy(l.from)} H${x} V${cy(l.to)} H${vnw + 3}` };
+};
 ---
-<figure class="diagram">
+<figure class="diagram reveal">
   <svg class="dg-defs" width="0" height="0" aria-hidden="true">
     <defs>
       <marker id={`${id}-a`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="dg-head" /></marker>
       <marker id={`${id}-l`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="dg-loop-head" /></marker>
     </defs>
   </svg>
-  <svg class="dg-h" viewBox={`-2 0 ${W + 4} ${H}`} aria-hidden="true">
+
+  <svg class="dg-h" viewBox={`-2 0 ${W + 4} ${H}`} data-live aria-hidden="true">
     {nodes.slice(0, -1).map((_, i) => (
-      <line class="dg-edge" x1={cx(i) + nw / 2} y1={top + nh / 2} x2={cx(i + 1) - nw / 2 - 2} y2={top + nh / 2} marker-end={`url(#${id}-a)`} />
+      <line class="dg-edge" pathLength="1" style={d((i + 0.6) * step)} x1={cx(i) + nw / 2} y1={top + nh / 2} x2={cx(i + 1) - nw / 2 - 2} y2={top + nh / 2} marker-end={`url(#${id}-a)`} />
     ))}
-    {below.map((l) => {
-      const y = top + nh + 36;
-      return (
-        <g>
-          <path class="dg-loop" d={`M${cx(l.from)} ${top + nh} V${y} H${cx(l.to)} V${top + nh + 3}`} marker-end={`url(#${id}-l)`} />
-          <text class="dg-loop-label" x={(cx(l.from) + cx(l.to)) / 2} y={y + 20} text-anchor="middle">{l.label}</text>
-        </g>
-      );
-    })}
-    {above.map((l) => {
-      const y = top - 36;
-      return (
-        <g>
-          <path class="dg-loop" d={`M${cx(l.from)} ${top} V${y} H${cx(l.to)} V${top - 3}`} marker-end={`url(#${id}-l)`} />
-          <text class="dg-loop-label" x={(cx(l.from) + cx(l.to)) / 2} y={y - 10} text-anchor="middle">{l.label}</text>
-        </g>
-      );
-    })}
+    {below.map((l) => (
+      <g class="dg-loopg" style={d(loopDelay)}>
+        <path class="dg-loop" d={hLoop(l, 1)} marker-end={`url(#${id}-l)`} />
+        <text class="dg-loop-label" x={(cx(l.from) + cx(l.to)) / 2} y={top + nh + 56} text-anchor="middle">{l.label}</text>
+        <circle class="packet loop-packet" r="4"><animateMotion path={hLoop(l, 1)} dur="2.4s" repeatCount="indefinite" /></circle>
+      </g>
+    ))}
+    {above.map((l) => (
+      <g class="dg-loopg" style={d(loopDelay + 0.2)}>
+        <path class="dg-loop" d={hLoop(l, -1)} marker-end={`url(#${id}-l)`} />
+        <text class="dg-loop-label" x={(cx(l.from) + cx(l.to)) / 2} y={top - 46} text-anchor="middle">{l.label}</text>
+        <circle class="packet loop-packet" r="4"><animateMotion path={hLoop(l, -1)} dur="2.4s" begin="1.2s" repeatCount="indefinite" /></circle>
+      </g>
+    ))}
+    <circle class="packet" r="4.5"><animateMotion path={`M${cx(0)} ${top + nh / 2} H${cx(n - 1)}`} dur={flowDur} repeatCount="indefinite" /></circle>
     {nodes.map((node, i) => (
-      <g>
+      <g class="dg-nodeg" style={d(i * step)}>
         <rect class="dg-node" x={cx(i) - nw / 2} y={top} width={nw} height={nh} rx="8" />
         <text class="dg-label" x={cx(i)} y={top + 33} text-anchor="middle">{node.label}</text>
         {node.sub && <text class="dg-sub" x={cx(i)} y={top + 55} text-anchor="middle">{node.sub}</text>}
@@ -59,21 +70,23 @@ const cy = (i: number) => i * (vnh + vgap) + vnh / 2;
     ))}
   </svg>
 
-  <svg class="dg-v" viewBox={`0 0 ${VW} ${VH}`} aria-hidden="true">
+  <svg class="dg-v" viewBox={`0 0 ${VW} ${VH}`} data-live aria-hidden="true">
     {nodes.slice(0, -1).map((_, i) => (
-      <line class="dg-edge" x1={vnw / 2} y1={cy(i) + vnh / 2} x2={vnw / 2} y2={cy(i + 1) - vnh / 2 - 2} marker-end={`url(#${id}-a)`} />
+      <line class="dg-edge" pathLength="1" style={d((i + 0.6) * step)} x1={vnw / 2} y1={cy(i) + vnh / 2} x2={vnw / 2} y2={cy(i + 1) - vnh / 2 - 2} marker-end={`url(#${id}-a)`} />
     ))}
     {loops.map((l, k) => {
-      const x = vnw + 22 + k * 26;
+      const v = vLoop(l, k);
       return (
-        <g>
-          <path class="dg-loop" d={`M${vnw} ${cy(l.from)} H${x} V${cy(l.to)} H${vnw + 3}`} marker-end={`url(#${id}-l)`} />
-          <text class="dg-loop-label" transform={`translate(${x + 12} ${(cy(l.from) + cy(l.to)) / 2}) rotate(90)`} text-anchor="middle">{l.label}</text>
+        <g class="dg-loopg" style={d(loopDelay + k * 0.2)}>
+          <path class="dg-loop" d={v.d} marker-end={`url(#${id}-l)`} />
+          <text class="dg-loop-label" transform={`translate(${v.x + 12} ${(cy(l.from) + cy(l.to)) / 2}) rotate(90)`} text-anchor="middle">{l.label}</text>
+          <circle class="packet loop-packet" r="4"><animateMotion path={v.d} dur="2.4s" begin={`${k * 1.2}s`} repeatCount="indefinite" /></circle>
         </g>
       );
     })}
+    <circle class="packet" r="4.5"><animateMotion path={`M${vnw / 2} ${cy(0)} V${cy(n - 1)}`} dur={flowDur} repeatCount="indefinite" /></circle>
     {nodes.map((node, i) => (
-      <g>
+      <g class="dg-nodeg" style={d(i * step)}>
         <rect class="dg-node" x="1" y={cy(i) - vnh / 2} width={vnw - 2} height={vnh} rx="8" />
         <text class="dg-label" x={vnw / 2} y={cy(i) - 3} text-anchor="middle">{node.label}</text>
         {node.sub && <text class="dg-sub" x={vnw / 2} y={cy(i) + 17} text-anchor="middle">{node.sub}</text>}

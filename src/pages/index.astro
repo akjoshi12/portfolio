@@ -2,14 +2,17 @@
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import StatusBadge from "../components/StatusBadge.astro";
+import HeroConsole from "../components/HeroConsole.astro";
+import CardViz from "../components/CardViz.astro";
 import { site, featured, earlier, principles, stack, experience, education } from "../content/site";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
 <Base>
   <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap">
-      <p class="chip mono"><span class="dot" aria-hidden="true"></span>{site.status} · {site.location}</p>
+    <div class="wrap hero-grid">
+      <div>
+      <p class="chip mono"><span class="dot pulse" aria-hidden="true"></span>{site.status} · {site.location}</p>
       <p class="hero-name mono">{site.name} — Data &amp; AI Engineer</p>
       <h1 id="hero-title">{site.headline}</h1>
       <p class="lede">{site.lede}</p>
@@ -17,6 +20,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
         <a class="btn primary" href="#work">View work <Icon name="arrow-right" /></a>
         <a class="btn" href={site.resume}>Résumé <Icon name="file-text" /></a>
       </div>
+      </div>
+      <HeroConsole />
     </div>
   </section>
 
@@ -39,10 +44,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
             {p.facts && (
               <dl class="facts">
                 {p.facts.map((f) => (
-                  <div><dt class="mono">{f.label}</dt><dd class="mono">{f.value}</dd></div>
+                  <div><dt class="mono">{f.label}</dt><dd class="mono" data-count>{f.value}</dd></div>
                 ))}
               </dl>
             )}
+            {p.viz && <CardViz kind={p.viz} />}
             <ul class="tags mono" aria-label="Stack">
               {p.stack.map((t) => <li>{t}</li>)}
             </ul>

@@ -19,6 +19,8 @@ export interface Project {
   facts?: Fact[];
   repoUrl?: string;
   demoUrl?: string;
+  // Small animated visual on the home card; each one depicts something real about the project.
+  viz?: "strategies" | "graph" | "tests" | "readability";
 }
 
 export interface EarlierProject {
@@ -69,6 +71,7 @@ export const featured: Project[] = [
       { value: "300", label: "turn gold set" },
     ],
     repoUrl: "https://github.com/akjoshi12/AURA-V2",
+    viz: "strategies",
   },
   {
     slug: "resume-factory",
@@ -79,6 +82,7 @@ export const featured: Project[] = [
     status: "Shipped",
     stack: ["Python", "LangGraph", "Reflex", "SQLite", "LaTeX", "Tailscale"],
     repoUrl: "https://github.com/akjoshi12/resume-factory",
+    viz: "graph",
   },
   {
     slug: "redline",
@@ -93,6 +97,7 @@ export const featured: Project[] = [
       { value: "53×", label: "discrepancy caught" },
     ],
     repoUrl: "https://github.com/akjoshi12/redline",
+    viz: "tests",
   },
   {
     slug: "minuteminders",
@@ -108,7 +113,31 @@ export const featured: Project[] = [
       { value: "8", label: "engineers led" },
     ],
     demoUrl: "https://minuteminders.web.app/",
+    viz: "readability",
   },
+];
+
+// Hero readout — every value here must also appear in REAL METRICS.
+export const readout: { key: string; value: string }[] = [
+  { key: "aura.strategies", value: "8" },
+  { key: "aura.gold_set", value: "300 turns" },
+  { key: "aura.source_corpus", value: "500k turns" },
+  { key: "redline.phase_1", value: "23 tests passing" },
+  { key: "redline.discrepancy", value: "53× caught" },
+  { key: "minuteminders.wer", value: "0.0746" },
+  { key: "minuteminders.fre", value: "50.53 vs 63.55" },
+];
+
+// ESConv support-strategy taxonomy (Liu et al., 2021) — AURA's label space.
+export const esconvStrategies = [
+  "Question",
+  "Restatement",
+  "Reflection of feelings",
+  "Self-disclosure",
+  "Affirmation",
+  "Suggestions",
+  "Information",
+  "Others",
 ];
 
 export const earlier: EarlierProject[] = [

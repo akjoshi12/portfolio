@@ -79,7 +79,7 @@ const num = Object.fromEntries(sections.map(([id], k) => [id, pad(k + 1)]));
           <div class="prose">
             {study.measured.facts && (
               <dl class="facts big">
-                {study.measured.facts.map((f) => <div><dt class="mono">{f.label}</dt><dd class="mono">{f.value}</dd></div>)}
+                {study.measured.facts.map((f) => <div><dt class="mono">{f.label}</dt><dd class="mono" data-count>{f.value}</dd></div>)}
               </dl>
             )}
             <ul class="bullets">{study.measured.notes.map((n) => <li>{n}</li>)}</ul>

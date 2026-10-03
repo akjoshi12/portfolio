@@ -1,0 +1,51 @@
+---
+// Hero "live system" panel: packets flow through the pipeline the headline describes,
+// each stage pulses as a packet arrives, then real metrics type out as status lines.
+import { readout } from "../content/site";
+
+const stages = ["ingest", "transform", "retrieve", "generate", "eval"];
+const x0 = 24, x1 = 416, y = 30, period = 4; // seconds for one packet to cross
+const xs = stages.map((_, i) => x0 + (i * (x1 - x0)) / (stages.length - 1));
+const arrive = (x: number) => ((x - x0) / (x1 - x0)) * period;
+
+const keyW = Math.max(...readout.map((r) => r.key.length)) + 3;
+const lines = readout.map((r) => `${r.key} ${".".repeat(keyW - r.key.length)} ${r.value}`);
+---
+<figure class="console" aria-labelledby="console-cap">
+  <div class="console-bar mono">
+    <span class="console-title" id="console-cap">pipeline · live</span>
+    <span class="console-state"><span class="dot pulse" aria-hidden="true"></span>running</span>
+  </div>
+
+  <svg class="pipe" viewBox="0 0 440 84" data-live aria-hidden="true">
+    <line class="pipe-line" x1={x0} y1={y} x2={x1} y2={y} />
+    {[0, period / 2].map((begin) => (
+      <circle class="packet" r="3.5">
+        <animateMotion path={`M${x0} ${y} H${x1}`} dur={`${period}s`} begin={`${begin}s`} repeatCount="indefinite" />
+      </circle>
+    ))}
+    {stages.map((s, i) => {
+      const last = i === stages.length - 1;
+      return (
+        <g>
+          <rect class="halo" x={xs[i] - 17} y={y - 17} width="34" height="34" rx="9" opacity="0">
+            <animate attributeName="opacity" values="0;0.5;0;0" keyTimes="0;0.06;0.45;1" dur={`${period / 2}s`} begin={`${arrive(xs[i])}s`} repeatCount="indefinite" />
+          </rect>
+          <rect class={`stage${last ? " gate" : ""}`} x={xs[i] - 12} y={y - 12} width="24" height="24" rx="6" />
+          {last && <path class="gate-check" d={`M${xs[i] - 5} ${y} l3.5 3.5 l6.5 -7`} />}
+          <text class="stage-label" x={xs[i]} y="72" text-anchor="middle">{s}</text>
+        </g>
+      );
+    })}
+  </svg>
+
+  <dl class="readout mono">
+    {lines.map((l, i) => (
+      <div class="ln" style={`--n:${l.length};--i:${i}`}>
+        <dt>{readout[i].key}</dt><dd aria-hidden="true">{l.slice(readout[i].key.length)}</dd>
+        <dd class="sr-only">{readout[i].value}</dd>
+      </div>
+    ))}
+    <div class="ln cursor-ln" style={`--n:1;--i:${lines.length}`} aria-hidden="true"><span class="cursor"></span></div>
+  </dl>
+</figure>

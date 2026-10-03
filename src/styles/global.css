@@ -266,12 +266,124 @@ main:focus { outline: none; }
 .dg-node { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
 .dg-label { fill: var(--text); font: 600 15px var(--font-sans); }
 .dg-sub { fill: var(--muted); font: 400 11px var(--font-mono); }
-.dg-edge { stroke: var(--faint); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.dg-edge { stroke: var(--faint); stroke-width: 1.5; }
 .dg-head { fill: var(--faint); }
 .dg-loop { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 5; }
 .dg-loop-head { fill: var(--accent); }
 .dg-loop-label { fill: var(--accent); font: 400 11px var(--font-mono); }
-@media (prefers-reduced-motion: no-preference) {
-  .dg-edge, .dg-loop { animation: dg-flow 1s linear infinite; }
+
+/* ================= Motion system =================
+   Every animation depicts something real. Default (and reduced-motion) state = final state;
+   animations are declared only under no-preference, paused until the element enters view (.in). */
+
+.pulse { position: relative; }
+.packet, .halo { display: none; }
+
+/* Hero layout + console */
+@media (min-width: 1024px) {
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: var(--s-12); align-items: center; }
 }
-@keyframes dg-flow { to { stroke-dashoffset: -10; } }
+.console {
+  margin: var(--s-12) 0 0; padding: var(--s-4); max-width: 520px;
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-lg);
+}
+@media (min-width: 1024px) { .console { margin: 0; justify-self: end; width: 100%; } }
+.console-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: var(--s-3); border-bottom: 1px solid var(--border); font-size: var(--fs-xs); color: var(--faint); }
+.console-state { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--accent); }
+.pipe { display: block; width: 100%; height: auto; margin: var(--s-4) 0 var(--s-2); }
+.pipe-line { stroke: var(--border-strong); stroke-width: 1.5; }
+.stage { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1.5; }
+.stage.gate { stroke: var(--accent); }
+.gate-check { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.stage-label { fill: var(--muted); font: 400 13px var(--font-mono); }
+.halo { fill: var(--accent); }
+.packet { fill: var(--accent); }
+.readout { padding-top: var(--s-3); border-top: 1px solid var(--border); font-size: 12px; line-height: 1.75; color: var(--muted); }
+@media (min-width: 480px) { .readout { font-size: 13px; } }
+.readout .ln { white-space: pre; overflow: hidden; }
+.readout dt, .readout dd { display: inline; }
+.readout dt { color: var(--text); }
+.cursor { display: inline-block; width: 0.6em; height: 1.1em; vertical-align: text-bottom; background: var(--accent); }
+
+/* Card micro-visuals */
+.viz { margin: 0; padding: var(--s-3) 0 0; }
+.viz figcaption { margin-top: var(--s-2); font-size: var(--fs-xs); color: var(--faint); }
+.viz-strategies ul { display: flex; flex-wrap: wrap; gap: 6px; }
+.viz-strategies li {
+  padding: 2px var(--s-2); font-size: 11px; color: var(--muted);
+  border: 1px dashed var(--border-strong); border-radius: 999px;
+}
+.viz-graph ol { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; counter-reset: none; }
+.viz-graph li {
+  position: relative; padding: 6px 0; text-align: center; font-size: 11px; color: var(--muted);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.viz-graph li.g3 { color: var(--accent); border-color: var(--accent); }
+.viz-tests .cells { display: grid; grid-template-columns: repeat(23, 1fr); gap: 3px; }
+@media (max-width: 479px) { .viz-tests .cells { grid-template-columns: repeat(12, 1fr); } }
+.viz-tests .cells span { aspect-ratio: 1; border-radius: 2px; background: var(--accent); }
+.viz-bars dl { display: grid; gap: 6px; }
+.viz-bars dl div { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: var(--s-3); font-size: 11px; }
+.viz-bars dt { color: var(--muted); }
+.viz-bars dd { display: flex; align-items: center; gap: var(--s-2); color: var(--text); }
+.viz-bars .bar { display: block; height: 8px; width: calc(var(--v) * 1%); max-width: calc(100% - 6ch); border-radius: 2px; background: var(--accent); transform-origin: left; }
+.viz-bars .baseline .bar { background: var(--faint); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .packet, .halo { display: inline; }
+
+  /* status dots: live */
+  .pulse::after {
+    content: ""; position: absolute; inset: 0; border-radius: 50%; background: currentColor;
+    animation: pulse 2s var(--ease-out) infinite;
+  }
+  @keyframes pulse { from { transform: scale(1); opacity: 0.6; } to { transform: scale(3); opacity: 0; } }
+
+  /* hero readout types out, line by line */
+  .readout .ln { clip-path: inset(0 100% 0 0); animation: type calc(var(--n) * 22ms) steps(var(--n)) forwards; animation-delay: calc(0.6s + var(--i) * 0.42s); }
+  @keyframes type { to { clip-path: inset(0 0 0 0); } }
+  .cursor { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* counters: handled in JS; nothing here */
+
+  /* AURA: labeler lights one strategy at a time */
+  .viz-strategies li { animation: lit 8s infinite paused; animation-delay: calc(var(--i) * 1s); }
+  .card.in .viz-strategies li { animation-play-state: running; }
+  @keyframes lit { 0%, 11% { color: var(--accent); border-color: var(--accent); border-style: solid; } 13%, 100% { color: var(--muted); border-color: var(--border-strong); } }
+
+  /* Resume Factory: active state walks the graph, holding longest at human review */
+  .viz-graph li { animation-duration: 6s; animation-iteration-count: infinite; animation-play-state: paused; }
+  .viz-graph li.g3 { color: var(--muted); border-color: var(--border); }
+  .viz-graph .g0 { animation-name: g0; } .viz-graph .g1 { animation-name: g1; }
+  .viz-graph .g2 { animation-name: g2; } .viz-graph .g3 { animation-name: g3; }
+  .card.in .viz-graph li { animation-play-state: running; }
+  @keyframes g0 { 0%, 15% { color: var(--accent); border-color: var(--accent); } 16%, 100% { color: var(--muted); border-color: var(--border); } }
+  @keyframes g1 { 0%, 16% { color: var(--muted); border-color: var(--border); } 17%, 58% { color: var(--progress); border-color: var(--progress); } 59%, 100% { color: var(--muted); border-color: var(--border); } }
+  @keyframes g2 { 0%, 59% { color: var(--muted); border-color: var(--border); } 60%, 74% { color: var(--accent); border-color: var(--accent); } 75%, 100% { color: var(--muted); border-color: var(--border); } }
+  @keyframes g3 { 0%, 75% { color: var(--muted); border-color: var(--border); } 76%, 100% { color: var(--accent); border-color: var(--accent); } }
+
+  /* Redline: test cells go green one by one */
+  .viz-tests .cells span { animation: cell 0.3s var(--ease-out) both paused; animation-delay: calc(0.3s + var(--i) * 70ms); }
+  .card.in .viz-tests .cells span { animation-play-state: running; }
+  @keyframes cell { from { background: var(--border-strong); transform: scale(0.6); } }
+
+  /* MinuteMinders: readability bars grow to their measured values */
+  .viz-bars .bar { animation: grow 1s var(--ease-out) both paused; animation-delay: 0.3s; }
+  .viz-bars .baseline .bar { animation-delay: 0.5s; }
+  .card.in .viz-bars .bar { animation-play-state: running; }
+  @keyframes grow { from { transform: scaleX(0); } }
+
+  /* Case-study diagram draws itself, then flows */
+  .diagram .dg-edge { stroke-dasharray: 1; animation: draw 0.4s var(--ease-out) both paused; animation-delay: var(--d); }
+  .diagram .dg-nodeg { animation: node-in 0.4s var(--ease-out) both paused; animation-delay: var(--d); }
+  .diagram .dg-loopg { animation: fade 0.5s var(--ease-out) both paused; animation-delay: var(--d); }
+  .diagram.in .dg-edge, .diagram.in .dg-nodeg, .diagram.in .dg-loopg { animation-play-state: running; }
+  .diagram .packet { opacity: 0; transition: opacity 0.4s 1.6s; }
+  .diagram.in .packet { opacity: 1; }
+  .diagram .dg-loop { animation: march 1s linear infinite; }
+  @keyframes draw { from { stroke-dashoffset: 1; opacity: 0; } 30% { opacity: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes node-in { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes march { to { stroke-dashoffset: -10; } }
+}

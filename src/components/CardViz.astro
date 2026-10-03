@@ -1,0 +1,44 @@
+---
+// Per-project micro-visual. Each depicts a real property of the project, never invented data.
+import type { Project } from "../content/site";
+import { esconvStrategies } from "../content/site";
+
+const { kind } = Astro.props as { kind: NonNullable<Project["viz"]> };
+const graph = ["select", "review", "compile", "1 page"];
+---
+{kind === "strategies" && (
+  <figure class="viz viz-strategies">
+    <ul class="mono" role="list">
+      {esconvStrategies.map((s, i) => <li style={`--i:${i}`}>{s}</li>)}
+    </ul>
+    <figcaption class="mono">Strategy labeler cycling the ESConv label space</figcaption>
+  </figure>
+)}
+
+{kind === "graph" && (
+  <figure class="viz viz-graph">
+    <ol class="mono" role="list">
+      {graph.map((s, i) => <li class={`g${i}`}>{s}</li>)}
+    </ol>
+    <figcaption class="mono">interrupt() holds the graph at review until a human approves</figcaption>
+  </figure>
+)}
+
+{kind === "tests" && (
+  <figure class="viz viz-tests">
+    <div class="cells" aria-hidden="true">
+      {Array.from({ length: 23 }, (_, i) => <span style={`--i:${i}`}></span>)}
+    </div>
+    <figcaption class="mono">Phase 1 gate: 23 tests passing</figcaption>
+  </figure>
+)}
+
+{kind === "readability" && (
+  <figure class="viz viz-bars">
+    <dl class="mono">
+      <div><dt>MinuteMinders</dt><dd><span class="bar" style="--v:50.53"></span>50.53</dd></div>
+      <div class="baseline"><dt>Copilot baseline</dt><dd><span class="bar" style="--v:63.55"></span>63.55</dd></div>
+    </dl>
+    <figcaption class="mono">Flesch Reading Ease, higher reads easier. The baseline won.</figcaption>
+  </figure>
+)}
