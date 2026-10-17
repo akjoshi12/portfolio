@@ -3,12 +3,28 @@
    then restyles the shared surfaces: header, buttons, cards, console, diagram, demo video.
    Everything else inherits through the tokens, so no component knows which skin is active. */
 
-/* ---------- Minimal: graphite + signal green (the base tokens), with a little more finish ---------- */
+/* ---------- Minimal: earthy ceramics palette (the base tokens) + gentle parallax ---------- */
 [data-skin="minimal"] .card:hover,
 [data-skin="minimal"] .card:focus-within {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent), 0 16px 40px -20px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 [data-skin="minimal"] .btn.primary { box-shadow: 0 6px 20px -8px color-mix(in srgb, var(--accent) 60%, transparent); }
+
+/* Parallax: hero layers drift at different speeds as the page scrolls. CSS scroll timelines only —
+   browsers without them (Firefox today) and reduced-motion users get the static page.
+   Uses `translate`, not `transform`, so it composes with reveal/hover transforms.
+   Longhands on purpose: the minifier folds a shorthand + timeline into `animation: … scroll(root)`, which Chrome drops. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    [data-skin="minimal"] .hero { animation-name: px-grid; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+    [data-skin="minimal"] .hero-grid > :first-child { animation-name: px-slow; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+    [data-skin="minimal"] .hero .console { animation-name: px-fast; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+    [data-skin="minimal"] .study-head h1 { animation-name: px-slow; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: scroll(root); animation-range: 0 60vh; }
+  }
+}
+@keyframes px-grid { to { background-position: center 140px; } }
+@keyframes px-slow { to { translate: 0 40px; } }
+@keyframes px-fast { to { translate: 0 -70px; } }
 
 /* ---------- Glass: indigo aurora behind frosted panels (visionOS / Linear-style) ---------- */
 :root[data-skin="glass"] {
