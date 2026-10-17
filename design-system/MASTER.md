@@ -15,14 +15,11 @@ Generated with ui-ux-pro-max (`--design-system "developer portfolio AI engineer 
 ## Color (contrast measured vs bg / surface)
 | Token | Dark | Light | Use |
 |---|---|---|---|
-| text | #EFE7DC 14.6:1 | #2B1E16 12.9:1 | body, headings |
-| muted | #BFB2A2 8.6:1 | #5A473A 7.0:1 | secondary copy |
-| faint | #9C9081 5.7:1 | #6B5A4C 5.2:1 | mono labels, meta (still AA) |
-| accent | #DBA27A 8.1:1 | #8A4526 5.6:1 | links, active nav, focus ring, key metric, Shipped badge |
-| progress | #E2B65A 9.4:1 | #7F5300 5.3:1 | **"In progress" badge only** |
-
-Palette (minimal skin, Oct 2026): earthy ceramics — powder-blue ground (#DDE7EC), clay-cream surfaces (#F4EFE7), deep-brown text, terracotta accent; dark keeps the tones on a blue-black ground. Ratios above are vs bg; all ≥ 5.2:1 vs surface too. Glass and skeuo skins override these in `src/styles/skins.css`.
-Parallax (minimal only): hero copy drifts down 40px, console up 70px, grid shifts over the first viewport of scroll; CSS scroll timelines, static where unsupported or under reduced motion.
+| text | #E7EAEC 16.1:1 | #0E1214 17.5:1 | body, headings |
+| muted | #9AA3AB 7.6:1 | #4A545C 7.2:1 | secondary copy |
+| faint | #7C858D 5.2:1 | #5F6971 5.2:1 | mono labels, meta (still AA) |
+| accent | #4ADE80 11.2:1 | #15803D 4.7:1 | links, active nav, focus ring, key metric, Shipped badge |
+| progress | #E5A54B 9.1:1 | #975A00 5.2:1 | **"In progress" badge only** |
 
 Rules: one accent; never color-only status (badge always has text + icon). Accent coverage < 5% of any viewport.
 
