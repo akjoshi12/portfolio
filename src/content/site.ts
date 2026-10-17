@@ -78,7 +78,7 @@ export const featured: Project[] = [
     title: "Resume Factory v2",
     kind: "Human-in-the-loop document agent",
     summary:
-      "Local-first LangGraph state machine with interrupt() review gates and a SQLite checkpointer. The model may select and rephrase — never add facts — and a compile → measure → retry loop enforces one page of LaTeX.",
+      "Local-first LangGraph pipeline with two human review gates and a SQLite checkpointer. Every rephrased bullet is verified against its source — no invented facts — then compiled to one page of LaTeX and scored with a transparent ATS-match proxy.",
     status: "Shipped",
     stack: ["Python", "LangGraph", "Reflex", "SQLite", "LaTeX", "Tailscale"],
     repoUrl: "https://github.com/akjoshi12/resume-factory",
@@ -285,44 +285,50 @@ export const caseStudies: Record<string, CaseStudy> = {
     problem:
       "Tailoring a résumé per posting is slow, and an unconstrained LLM will happily invent a skill or a number to fit the job description. LaTeX adds a second failure mode: one extra bullet and the page spills to two.",
     approach: [
-      "A local-first LangGraph state machine, with interrupt() at each human review gate.",
-      "A SQLite checkpointer, so a run survives restarts and resumes exactly where it paused.",
-      "The model may only select and rephrase bullets from a fixed master-résumé pool — no new facts, numbers or skills.",
-      "Reject-with-feedback: a free-text critique goes into the regenerate node together with the prior attempt.",
-      "A hard one-page constraint enforced by compiling the LaTeX, measuring the result and retrying.",
+      "A quick scan before generating anything: match %, an Apply / Stretch / Skip verdict, strengths, gaps and missing tools.",
+      "A local-first LangGraph state machine — 12 nodes, interrupt() at two human review gates (résumé, then cover letter).",
+      "The model may only select and rephrase bullets from master_resume.json; a claim verifier rejects any number, named entity or tool absent from the source.",
+      "A hard one-page constraint: render Jinja → LaTeX → PDF, measure, and trim deterministically — no model call — until it fits.",
+      "A SQLite checkpointer, so a run paused at review survives restarts and resumes days later exactly where it stopped.",
     ],
     diagram: {
-      title: "Resume Factory v2 graph",
+      title: "Resume Factory v2 pipeline",
       nodes: [
-        { label: "Job posting", sub: "input" },
-        { label: "Select & rephrase", sub: "fixed bullet pool" },
+        { label: "Quick scan", sub: "Apply / Stretch / Skip" },
+        { label: "Tailor", sub: "select + rephrase" },
+        { label: "Verify claims", sub: "no invented facts" },
+        { label: "Render + score", sub: "one page · ATS match" },
         { label: "Human review", sub: "interrupt() · SQLite" },
-        { label: "LaTeX compile", sub: "generated source" },
-        { label: "Measure", sub: "exactly one page?" },
-        { label: "PDF", sub: "approved output" },
+        { label: "Cover letter", sub: "same checks · 2nd gate" },
       ],
       loops: [
-        { from: 2, to: 1, label: "reject + feedback" },
-        { from: 4, to: 1, label: "over one page → retry" },
+        { from: 2, to: 1, label: "violation → retry ≤3×" },
+        { from: 4, to: 1, label: "reject + feedback" },
       ],
     },
     decisions: [
       {
         title: "Constrain the model, don't just prompt it",
-        body: "Selection from a fixed pool turns \"don't make things up\" from a request into a property of the system.",
+        body: "Selection from a fixed pool plus a claim verifier turns \"don't make things up\" from a request into a property of the system. If retries run out, the text falls back to the approved source and the violations are shown.",
       },
       {
         title: "Humans at the gates, not after the fact",
         body: "interrupt() pauses the graph where judgment matters; the checkpointer means pausing costs nothing.",
       },
       {
-        title: "Local model first, cloud as fallback",
-        body: "A self-hosted OpenAI-compatible gateway routes to a local LM Studio model first and falls back to cloud, served privately over Tailscale.",
+        title: "Proxy scores with their working shown",
+        body: "No applicant tracking system emits a score, so the ATS match is an explicit proxy: 45% posting tools, 35% requirement keywords, 10% job title, 10% clean parse — and tools you've never used cap it.",
+      },
+      {
+        title: "Private by default, reachable anywhere",
+        body: "The app stays on the Mac, kept alive by launchd and reached over Tailscale. Local LM Studio model first, with an optional OpenAI-compatible gateway — no résumé data leaves the machine unless you choose it.",
       },
     ],
     measured: {
       notes: [
         "Page count is measured after every compile — the one-page rule is checked, not assumed.",
+        "Parse-back: text is extracted from the generated PDF with two different extractors and checked for name, employers, dates and schools.",
+        "Graph tests run with a stubbed model against real LaTeX.",
       ],
     },
   },
