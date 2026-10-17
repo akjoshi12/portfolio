@@ -27,12 +27,13 @@
   color-scheme: dark;
 }
 :root[data-theme="light"] {
-  --bg: #F6F7F7; --surface: #FFFFFF; --surface-2: #EEF0F1;
-  --border: #D9DEE1; --border-strong: #B9C1C6;
-  --text: #0E1214; --muted: #4A545C; --faint: #5F6971;
-  --accent: #15803D; --on-accent: #FFFFFF;
-  --progress: #975A00;
-  --grid-line: rgba(14, 18, 20, 0.05);
+  /* warm stone neutrals + moss accent: still "tests pass" green, just earthier */
+  --bg: #F7F5F1; --surface: #FFFFFF; --surface-2: #EFEBE4;
+  --border: #E2DCD3; --border-strong: #C4BBAE;
+  --text: #1C1917; --muted: #57534E; --faint: #6B645C;
+  --accent: #4D6B1F; --on-accent: #FFFFFF;
+  --progress: #8A5300;
+  --grid-line: rgba(28, 25, 23, 0.05);
   color-scheme: light;
 }
 @media (prefers-reduced-motion: reduce) { :root { --dur: 0ms; } }

@@ -15,11 +15,11 @@ Generated with ui-ux-pro-max (`--design-system "developer portfolio AI engineer 
 ## Color (contrast measured vs bg / surface)
 | Token | Dark | Light | Use |
 |---|---|---|---|
-| text | #E7EAEC 16.1:1 | #0E1214 17.5:1 | body, headings |
-| muted | #9AA3AB 7.6:1 | #4A545C 7.2:1 | secondary copy |
-| faint | #7C858D 5.2:1 | #5F6971 5.2:1 | mono labels, meta (still AA) |
-| accent | #4ADE80 11.2:1 | #15803D 4.7:1 | links, active nav, focus ring, key metric, Shipped badge |
-| progress | #E5A54B 9.1:1 | #975A00 5.2:1 | **"In progress" badge only** |
+| text | #E7EAEC 16.1:1 | #1C1917 16.1:1 | body, headings |
+| muted | #9AA3AB 7.6:1 | #57534E 7.0:1 | secondary copy |
+| faint | #7C858D 5.2:1 | #6B645C 5.4:1 | mono labels, meta (still AA) |
+| accent | #4ADE80 11.2:1 | #4D6B1F 5.6:1 | links, active nav, focus ring, key metric, Shipped badge |
+| progress | #E5A54B 9.1:1 | #8A5300 5.8:1 | **"In progress" badge only** |
 
 Rules: one accent; never color-only status (badge always has text + icon). Accent coverage < 5% of any viewport.
 
