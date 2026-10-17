@@ -168,11 +168,22 @@ export const principles = [
   },
 ];
 
+// Mirrors skills in resume-factory data/master_resume.json — update there first, then copy here.
 export const stack = [
-  { depth: "Core", items: ["Python", "SQL", "RAG", "LangChain / LangGraph", "LLM evaluation", "Local inference (LM Studio, MLX)"] },
-  { depth: "Working", items: ["PySpark", "Databricks", "scikit-learn", "XGBoost / SHAP", "FastAPI", "Reflex", "ChromaDB"] },
-  { depth: "Familiar", items: ["Snowflake", "Azure Data Factory", "GCP / Dataproc", "Power BI (DAX)", "R"] },
+  { group: "Languages", items: ["Python", "SQL", "R", "JavaScript", "Bash"] },
+  { group: "Machine Learning", items: ["scikit-learn", "PyTorch", "TensorFlow", "MLflow", "Azure Machine Learning", "NumPy", "Pandas", "Generative Models (VAE/CGAN)", "Computer Vision", "NLP", "Speech Recognition (ASR)"] },
+  { group: "Generative AI & LLMs", items: ["RAG", "LangGraph", "LangChain", "Vector Search & Embeddings", "Prompt Engineering", "Context Engineering", "Agentic Workflows", "Human-in-the-Loop Design", "Model Context Protocol (MCP)", "LLM Evaluation (LLM-as-Judge)", "Structured Outputs"] },
+  { group: "LLM & NLP Tooling", items: ["Hugging Face", "Whisper", "Pyannote", "spaCy", "Mistral API", "Groq", "LM Studio", "Ollama", "Model Quantization (GGUF)", "OpenAI-Compatible APIs", "Flux (Diffusion)"] },
+  { group: "Data Engineering", items: ["PySpark", "Apache Spark", "Databricks", "Delta Lake", "Azure Data Factory", "Snowflake", "ETL/ELT Pipelines", "Lakehouse (Medallion Architecture)", "Batch Data Ingestion", "JSON Parsing"] },
+  { group: "Databases & Cloud", items: ["MySQL", "SQLite", "Elasticsearch", "Microsoft Azure", "Data Modelling (Star/Snowflake Schema)", "Oracle Cloud"] },
+  { group: "Data Quality & Governance", items: ["Validation & Reconciliation", "Data Quality Rules", "Root-Cause Analysis", "Data Documentation", "Inter-Annotator Agreement (Cohen's Kappa)"] },
+  { group: "Analytics & Reporting", items: ["Power BI", "DAX", "Excel (Pivot Tables)", "Exploratory Data Analysis", "Descriptive Statistics", "Dashboard Design", "Stakeholder Reporting"] },
+  { group: "Backend & Frameworks", items: ["FastAPI", "Flask", "REST APIs", "Pydantic", "Reflex", "React", "GitHub", "Linux"] },
+  { group: "DevOps & Tooling", items: ["CI/CD", "Git", "Jenkins", "SonarQube", "Prometheus", "pytest", "ruff", "mypy", "uv", "Tailscale"] },
 ];
+// Honest depth, from the same file: stale = real but not used since 2023; familiar = defensible but thin.
+export const staleSkills = ["PySpark", "Databricks", "Azure Data Factory", "Snowflake", "Power BI", "DAX", "Apache Spark", "Delta Lake"];
+export const familiarSkills = ["R", "Bash", "LangChain", "Context Engineering", "Hugging Face", "scikit-learn", "React", "Descriptive Statistics", "Computer Vision", "Oracle Cloud"];
 
 export const experience: Role[] = [
   { title: "Shift Supervisor", org: "Paragon Protection", when: "Apr 2026 — Present", secondary: true },

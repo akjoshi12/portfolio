@@ -179,7 +179,11 @@ main:focus { outline: none; }
 .stack-row:last-child { border-bottom: 1px solid var(--border); }
 .stack-row dt { font-size: var(--fs-sm); color: var(--accent); }
 .stack .tags li { font-size: var(--fs-sm); padding: var(--s-1) var(--s-3); }
-@media (min-width: 768px) { .stack-row { grid-template-columns: 160px 1fr; align-items: baseline; } }
+@media (min-width: 768px) { .stack-row { grid-template-columns: 220px 1fr; align-items: baseline; } }
+.stack .tags li.familiar, .stack-key li.familiar { background: none; border-style: dashed; color: var(--faint); }
+.stack .tags li.stale::after { content: "°"; margin-left: 2px; color: var(--faint); }
+.stack-key { margin-top: var(--s-6); }
+.stack-key li { font-size: var(--fs-xs); }
 
 /* Timeline */
 .timelines { display: grid; gap: var(--s-8); }

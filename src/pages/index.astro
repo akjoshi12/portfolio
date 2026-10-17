@@ -4,7 +4,7 @@ import Icon from "../components/Icon.astro";
 import StatusBadge from "../components/StatusBadge.astro";
 import HeroConsole from "../components/HeroConsole.astro";
 import CardViz from "../components/CardViz.astro";
-import { site, featured, earlier, principles, stack, experience, education } from "../content/site";
+import { site, featured, earlier, principles, stack, staleSkills, familiarSkills, experience, education } from "../content/site";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
@@ -105,11 +105,16 @@ const pad = (n: number) => String(n).padStart(2, "0");
       <dl class="stack">
         {stack.map((g) => (
           <div class="stack-row">
-            <dt class="mono">{g.depth}</dt>
-            <dd><ul class="tags mono" role="list">{g.items.map((t) => <li>{t}</li>)}</ul></dd>
+            <dt class="mono">{g.group}</dt>
+            <dd><ul class="tags mono" role="list">{g.items.map((t) => (
+              <li class:list={{ familiar: familiarSkills.includes(t), stale: staleSkills.includes(t) }}>{t}</li>
+            ))}</ul></dd>
           </div>
         ))}
       </dl>
+      <ul class="stack-key tags mono" aria-label="Key">
+        <li>solid · current</li><li class="familiar">dashed · familiar</li><li class="stale">° · last used 2023</li>
+      </ul>
     </div>
   </section>
 
