@@ -95,6 +95,18 @@ const num = Object.fromEntries(sections.map(([id], k) => [id, pad(k + 1)]));
                 {study.measured.facts.map((f) => <div><dt class="mono">{f.label}</dt><dd class="mono" data-count>{f.value}</dd></div>)}
               </dl>
             )}
+            {study.weights && (
+              <figure class="weights">
+                <figcaption class="mono">{study.weights.title}</figcaption>
+                <div class="weights-bar" aria-hidden="true">
+                  {study.weights.parts.map((w, k) => <span class={`w${k}`} style={`--v:${w.value}`} />)}
+                </div>
+                <ul class="weights-key mono">
+                  {study.weights.parts.map((w, k) => <li><span class={`sw w${k}`} />{w.label} <b>{w.value}%</b></li>)}
+                </ul>
+                <p class="weights-note">{study.weights.caption}</p>
+              </figure>
+            )}
             <ul class="bullets">{study.measured.notes.map((n) => <li>{n}</li>)}</ul>
           </div>
         </section>

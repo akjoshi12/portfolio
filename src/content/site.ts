@@ -81,6 +81,12 @@ export const featured: Project[] = [
       "Local-first LangGraph pipeline with two human review gates and a SQLite checkpointer. Every rephrased bullet is verified against its source — no invented facts — then compiled to one page of LaTeX and scored with a transparent ATS-match proxy.",
     status: "Shipped",
     stack: ["Python", "LangGraph", "Reflex", "SQLite", "LaTeX", "Tailscale"],
+    // Design constants from rfactory/graph/build.py and config.py, not outcome metrics.
+    facts: [
+      { value: "12", label: "graph nodes" },
+      { value: "2", label: "human review gates" },
+      { value: "≤3", label: "claim retries, then revert" },
+    ],
     repoUrl: "https://github.com/akjoshi12/resume-factory",
     viz: "graph",
   },
@@ -232,6 +238,8 @@ export interface CaseStudy {
   video?: { src: string; poster: string; caption: string };
   decisions: { title: string; body: string }[];
   measured?: { facts?: Fact[]; notes: string[] };
+  // A stacked bar of a score's weights (percent, summing to 100), drawn in the measured section.
+  weights?: { title: string; caption: string; parts: Fact[] };
   didntWork?: string[];
   next?: string;
 }
@@ -342,7 +350,21 @@ export const caseStudies: Record<string, CaseStudy> = {
         body: "The app stays on the Mac, kept alive by launchd and reached over Tailscale. Local LM Studio model first, with an optional OpenAI-compatible gateway — no résumé data leaves the machine unless you choose it.",
       },
     ],
+    weights: {
+      title: "ATS match weights",
+      caption: "A proxy, with the weights shown — no applicant tracking system emits a score.",
+      parts: [
+        { value: "45", label: "posting tools" },
+        { value: "35", label: "requirement keywords" },
+        { value: "10", label: "job title" },
+        { value: "10", label: "clean parse" },
+      ],
+    },
     measured: {
+      facts: [
+        { value: "1", label: "page, checked every compile" },
+        { value: "2", label: "parse-back extractors" },
+      ],
       notes: [
         "Page count is measured after every compile — the one-page rule is checked, not assumed.",
         "Parse-back: text is extracted from the generated PDF with two different extractors and checked for name, employers, dates and schools.",

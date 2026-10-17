@@ -53,6 +53,7 @@ Rule: **every animation depicts something real**; nothing moves just to decorate
 | Metric chips | count up 0 → value once in view | the number itself |
 | AURA card | the 8 ESConv strategies light one at a time | the labeler's label space |
 | Resume Factory card | active state walks select → review → compile → 1 page, holding at review (amber) | interrupt() waiting on a human |
+| Resume Factory weights | ATS-match bar grows to 45 / 35 / 10 / 10 | the proxy's weights, shown not hidden |
 | Redline card | 23 cells go green in sequence | the Phase 1 test gate |
 | MinuteMinders card | FRE bars grow to 50.53 and 63.55 | the honest loss to baseline |
 | Case-study diagrams | edges draw, nodes light in order, then loops; packets flow, loops march | the architecture executing |

@@ -172,7 +172,7 @@ const person = {
         }),
       { rootMargin: "0px 0px -10% 0px" },
     );
-    document.querySelectorAll(".reveal, .card, [data-count]").forEach((el) => io.observe(el));
+    document.querySelectorAll(".reveal, .card, .weights, [data-count]").forEach((el) => io.observe(el));
 
     // SMIL animations (packets, pulses): frozen under reduced motion, paused while off-screen.
     const live = document.querySelectorAll<SVGSVGElement>("svg[data-live]");

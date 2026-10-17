@@ -131,7 +131,7 @@ main:focus { outline: none; }
   display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: var(--s-2);
   padding: var(--s-3) 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
 }
-.facts div { display: flex; flex-direction: column-reverse; gap: 2px; }
+.facts div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 2px; }
 .facts dd { font-size: var(--fs-lg); font-weight: 500; color: var(--accent); }
 .facts dt { font-size: var(--fs-xs); color: var(--faint); }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -260,6 +260,18 @@ main:focus { outline: none; }
 .next-project a { display: grid; width: fit-content; gap: var(--s-2); padding: var(--s-12) 0; text-decoration: none; }
 .next-title { display: inline-flex; align-items: center; gap: var(--s-3); font-size: var(--fs-2xl); font-weight: 600; letter-spacing: var(--tracking-tight); }
 
+/* Weights bar (score composition) */
+.weights { margin: 0 0 var(--s-6); }
+.weights figcaption { font-size: var(--fs-xs); color: var(--faint); text-transform: uppercase; letter-spacing: var(--tracking-label); }
+.weights-bar { display: flex; gap: 2px; height: 14px; margin-top: var(--s-3); border-radius: var(--radius-sm); overflow: hidden; transform-origin: left; }
+.weights-bar span { flex: 0 0 calc(var(--v) * 1%); }
+.w0 { background: var(--accent); } .w1 { background: var(--progress); } .w2 { background: var(--muted); } .w3 { background: var(--faint); }
+.weights-key { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin-top: var(--s-3); font-size: var(--fs-xs); color: var(--muted); }
+.weights-key li { display: inline-flex; align-items: center; gap: 6px; }
+.weights-key b { font-weight: 500; color: var(--text); }
+.sw { width: 8px; height: 8px; border-radius: 2px; }
+.weights-note { margin-top: var(--s-2); font-size: var(--fs-sm); }
+
 /* Diagram */
 .diagram { margin: 0; padding: var(--s-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
 .diagram svg { display: block; width: 100%; height: auto; overflow: visible; }
@@ -378,6 +390,10 @@ main:focus { outline: none; }
   .viz-bars .baseline .bar { animation-delay: 0.5s; }
   .card.in .viz-bars .bar { animation-play-state: running; }
   @keyframes grow { from { transform: scaleX(0); } }
+
+  /* Score weights: the bar grows to its real composition */
+  .weights-bar { animation: grow 1s var(--ease-out) both paused; animation-delay: 0.2s; }
+  .weights.in .weights-bar { animation-play-state: running; }
 
   /* Case-study diagram draws itself, then flows */
   .diagram .dg-edge { stroke-dasharray: 1; animation: draw 0.4s var(--ease-out) both paused; animation-delay: var(--d); }
