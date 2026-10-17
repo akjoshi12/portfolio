@@ -217,6 +217,8 @@ export interface CaseStudy {
   problem: string;
   approach: string[];
   diagram: Diagram;
+  // Self-hosted under public/media; poster is a representative frame, not the first one.
+  video?: { src: string; poster: string; caption: string };
   decisions: { title: string; body: string }[];
   measured?: { facts?: Fact[]; notes: string[] };
   didntWork?: string[];
@@ -291,6 +293,11 @@ export const caseStudies: Record<string, CaseStudy> = {
       "A hard one-page constraint: render Jinja → LaTeX → PDF, measure, and trim deterministically — no model call — until it fits.",
       "A SQLite checkpointer, so a run paused at review survives restarts and resumes days later exactly where it stopped.",
     ],
+    video: {
+      src: "/media/resume-factory-demo.mp4",
+      poster: "/media/resume-factory-demo.jpg",
+      caption: "25-second walkthrough: quick scan, ATS match, UI skins and the always-on background service.",
+    },
     diagram: {
       title: "Resume Factory v2 pipeline",
       nodes: [

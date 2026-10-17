@@ -18,6 +18,7 @@ const next: Project = featured[(i + 1) % featured.length];
 const pad = (n: number) => String(n).padStart(2, "0");
 
 const sections = [
+  study.video && ["demo", "Demo"],
   ["problem", "Problem"],
   ["approach", "Approach"],
   ["architecture", "Architecture"],
@@ -51,6 +52,18 @@ const num = Object.fromEntries(sections.map(([id], k) => [id, pad(k + 1)]));
     </header>
 
     <div class="wrap study-body">
+      {study.video && (
+        <section class="wide" aria-labelledby="demo">
+          <h2 id="demo"><span class="mono">{num.demo}</span> Demo</h2>
+          <figure class="demo">
+            <video controls playsinline preload="metadata" poster={study.video.poster} width="1920" height="1080">
+              <source src={study.video.src} type="video/mp4" />
+            </video>
+            <figcaption>{study.video.caption}</figcaption>
+          </figure>
+        </section>
+      )}
+
       <section aria-labelledby="problem">
         <h2 id="problem"><span class="mono">{num.problem}</span> Problem</h2>
         <div class="prose"><p>{study.problem}</p></div>

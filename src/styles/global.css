@@ -1,4 +1,5 @@
 @import "../../design-system/tokens.css";
+@import "./skins.css";
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 80px; }

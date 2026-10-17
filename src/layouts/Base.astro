@@ -56,12 +56,14 @@ const person = {
   {isHome && <script type="application/ld+json" set:html={JSON.stringify(person)} />}
 
   <script is:inline>
-    // Stored choice → else system preference → else dark. Runs before paint to avoid a flash.
+    // Stored choice → else system preference → else dark; skin defaults to minimal. Runs before paint to avoid a flash.
     (function () {
-      var t = null;
-      try { t = localStorage.getItem("theme"); } catch (e) {}
+      var t = null, s = null;
+      try { t = localStorage.getItem("theme"); s = localStorage.getItem("skin"); } catch (e) {}
       if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      if (s !== "minimal" && s !== "glass" && s !== "skeuo") s = "minimal";
       document.documentElement.dataset.theme = t;
+      document.documentElement.dataset.skin = s;
       document.documentElement.classList.add("js");
     })();
   </script>
@@ -76,6 +78,10 @@ const person = {
           {nav.map(([label, href]) => <li class={label !== "Work" && label !== "Contact" ? "nav-wide" : ""}><a href={href}>{label}</a></li>)}
         </ul>
       </nav>
+      <button class="skin-toggle" type="button" aria-label="Style: minimal. Switch style">
+        <Icon name="palette" size={16} />
+        <span class="skin-name">minimal</span>
+      </button>
       <button class="theme-toggle" type="button" aria-label="Dark theme" aria-pressed="true">
         <Icon name="moon" size={18} class="i-dark" />
         <Icon name="sun" size={18} class="i-light" />
@@ -105,6 +111,21 @@ const person = {
       root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
       try { localStorage.setItem("theme", root.dataset.theme); } catch {}
       sync();
+    });
+
+    // Skins cycle minimal → glass → skeuo, independent of light/dark.
+    const skins = ["minimal", "glass", "skeuo"];
+    const skinToggle = document.querySelector<HTMLButtonElement>(".skin-toggle")!;
+    const syncSkin = () => {
+      const s = root.dataset.skin!;
+      skinToggle.querySelector(".skin-name")!.textContent = s;
+      skinToggle.setAttribute("aria-label", `Style: ${s}. Switch style`);
+    };
+    syncSkin();
+    skinToggle.addEventListener("click", () => {
+      root.dataset.skin = skins[(skins.indexOf(root.dataset.skin!) + 1) % skins.length];
+      try { localStorage.setItem("skin", root.dataset.skin); } catch {}
+      syncSkin();
     });
 
     const toast = document.querySelector<HTMLElement>(".toast")!;
