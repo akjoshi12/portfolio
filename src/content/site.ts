@@ -436,6 +436,11 @@ export const caseStudies: Record<string, CaseStudy> = {
       "Jenkins CI triggered by GitHub webhooks, SonarQube quality gates and Prometheus monitoring.",
       "Led an 8-engineer team across roughly 15.4k lines of code.",
     ],
+    video: {
+      src: "/media/minuteminders-demo.mp4",
+      poster: "/media/minuteminders-demo.jpg",
+      caption: "70-second walkthrough: upload, attendees, speaker labels, summary and action items, with voiceover.",
+    },
     diagram: {
       title: "MinuteMinders pipeline",
       nodes: [
